@@ -88,7 +88,7 @@ public class Interpreter : Expr.IVisitor<Object>
                 return isEqual(left, right);
         }
 
-        return null;
+        return null!;
     }
 
     public object visitGroupedExpr(GroupedExpr expr)
@@ -113,7 +113,7 @@ public class Interpreter : Expr.IVisitor<Object>
         }
 
         // Unreachable.
-        return null;
+        return null!;
     }
     
     #endregion
@@ -132,6 +132,12 @@ public class Interpreter : Expr.IVisitor<Object>
         if (left is null && right is null)
         {
             return true;
+        } 
+        
+        if (left is null)
+        {
+            // Right is definitely not null if we're here.
+            return false;
         }
 
         return left.Equals(right);
