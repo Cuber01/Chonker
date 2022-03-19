@@ -15,8 +15,6 @@ public class Parser
     public Parser(List<Token> tokens)
     {
         this.tokens = tokens;
-
-        expression();
     }
     
     public Expr? parse() 
@@ -106,13 +104,17 @@ public class Parser
     
     private Expr primary()
     {
-        switch (currentToken().type)
+        // This is basically a hack for not using matchConsume(). Should we find something, advance, nothing found? then retract from advancing.
+        Token oldToken = currentToken();
+        advance();
+        
+        switch (oldToken.type)
         {
             case TRUE:   return new LiteralExpr(true);  
             case FALSE:  return new LiteralExpr(false); 
             case NULL:   return new LiteralExpr(null);  
-            case NUMBER: return new LiteralExpr(currentToken().literal); 
-            case STRING: return new LiteralExpr(currentToken().literal); 
+            case NUMBER: return new LiteralExpr(oldToken.literal); 
+            case STRING: return new LiteralExpr(oldToken.literal); 
 
             case LEFT_PAREN:
             {
@@ -121,6 +123,9 @@ public class Parser
             }
         }
 
+        // Retract from advancing.
+        retract();
+        
         error(currentToken(), "Expect expression.");
 
         return null!;
@@ -134,7 +139,7 @@ public class Parser
     {
         foreach (var type in types)
         {
-            if (check(type))
+            if (tokens[currentIndex].type == type)
             {
                 advance();
                 return true;
@@ -143,17 +148,13 @@ public class Parser
 
         return false;
     }
-    
-    private bool check(TokenType type) {
-        if (isAtEnd()) return false;
-        return peek().type == type;
-    }
-    
-    private Token peek()
-    {
-        return tokens.ElementAt(currentIndex);
-    }
 
+    private void retract()
+    {
+        if(isAtBeginning()) return;
+        currentIndex--;
+    }
+    
     private void advance()
     {
         if(isAtEnd()) return;
@@ -173,6 +174,7 @@ public class Parser
     
 
     private bool isAtEnd() => currentIndex == tokens.Count - 1;
+    private bool isAtBeginning() => currentIndex == 0;
 
     private Token currentToken() => tokens.ElementAt(currentIndex);
 
