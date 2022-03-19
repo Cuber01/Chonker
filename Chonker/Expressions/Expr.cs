@@ -78,9 +78,9 @@ public class UnaryExpr : Expr
 
 public class LiteralExpr : Expr
 {
-    public LiteralExpr(Token literal)
+    public LiteralExpr(Token value)
     {
-        this.literal = literal;
+        this.value = value;
     }
     
     public override TResult accept<TResult>(IVisitor<TResult> visitor)
@@ -88,5 +88,5 @@ public class LiteralExpr : Expr
         return visitor.visitLiteralExpr(this);
     }
     
-    public Token literal;
+    public Token value;
 }
