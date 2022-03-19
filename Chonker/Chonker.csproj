@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Expressions" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Content Include="Tests\*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

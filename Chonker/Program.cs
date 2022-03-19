@@ -14,7 +14,6 @@ namespace Chonker // Note: actual namespace depends on the project name.
             foreach (var token in tokens)
             {
                 Console.WriteLine(token);
-                Console.WriteLine();
             }
         }
     }
