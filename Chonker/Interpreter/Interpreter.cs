@@ -4,6 +4,15 @@ using static Chonker.Tokens.TokenType;
 
 namespace Chonker.Interpreter;
 
+/*
+
+This is the interpreter. An interpreter gets expressions and executes them.
+ 
+We basically visit and evaluate every expression into values/literals, and then use the values with the given operand. 
+  
+*/
+
+
 public class Interpreter : Expr.IVisitor<Object>
 {
     public bool hadError = false;
@@ -89,7 +98,7 @@ public class Interpreter : Expr.IVisitor<Object>
 
     public object visitLiteralExpr(LiteralExpr expr)
     {
-        return expr.value;
+        return expr.value!;
     }
 
     public object visitUnaryExpr(UnaryExpr expr)

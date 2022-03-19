@@ -1,6 +1,15 @@
 using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
 
+/*
+
+This is the scanner, the first step in the journey of our language implementation.
+It's essentially just a script that transcribes text into Tokens, algorithmically it's not much, so let's just talk about what a token is.
+
+See Tokens/Token.cs
+ 
+*/
+
 namespace Chonker
 {
     public class Scanner

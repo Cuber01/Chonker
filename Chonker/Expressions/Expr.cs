@@ -4,8 +4,13 @@ namespace Chonker.Expressions;
 
 /*
  
- 
- 
+Expression is a chunk of tokens ready for executing. 
+
+Literal expression is just a value. The rest of expressions is made out of literal expressions and operands.
+
+We also use the visitor pattern here to access expression fields easily.
+
+To see how expressions are executed, go to Interpreter/Interpreter.cs 
   
 */
 

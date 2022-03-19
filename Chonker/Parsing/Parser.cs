@@ -5,6 +5,28 @@ using static Chonker.Tokens.TokenType;
 
 namespace Chonker.Parsing;
 
+/*
+ 
+A parser transcribes tokens into expressions and statements.
+
+This one recursively goes through all the rules and tries to apply the current token to them, uppon success
+it advances to the next token.
+
+Depending on the rule, the second token will usually have enough information to create an expression.
+
+
+-- Example --
+
+Input: 1 + 1
+
+First token: Go through all rules and finally bump into primary, create literal expression and advance
+Second token: Go through the rules and get into addition, create the right expression by calling the 'top' and return the final expression made of:
+(first token made into an expression, current token, third token made into an expression on the fly)
+
+To see what expressions are, go to Expressions/Expr.cs 
+
+*/
+
 public class Parser
 {
     private readonly List<Token> tokens;
