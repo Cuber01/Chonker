@@ -10,23 +10,23 @@ namespace Chonker
         
         private readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
         {
-            { "and",    AND    },
-            { "class",  CLASS  },
-            { "else",   ELSE   },
-            { "false",  FALSE  },
-            { "for",    FOR    },
-            { "fun",    FUN    },
-            { "if",     IF     },
-            { "nil",    NIL    },
-            { "or",     OR     },
-            { "print",  PRINT  },
-            { "return", RETURN },
-            { "super",  SUPER  },
-            { "this",   THIS   },
-            { "true",   TRUE   },
-            { "var",    VAR    },
-            { "while",  WHILE  },
-            { "break",  BREAK  }
+            { "and",         AND         },
+            { "class",       CLASS       },
+            { "else",        ELSE        },
+            { "false",       FALSE       },
+            { "for",         FOR         },
+            { "function",    FUNCTION    },
+            { "if",          IF          },
+            { "null",        NULL        },
+            { "or",          OR          },
+            { "print",       PRINT       },
+            { "return",      RETURN      },
+            { "super",       SUPER       },
+            { "this",        THIS        },
+            { "true",        TRUE        },
+            { "var",         VAR         },
+            { "while",       WHILE       },
+            { "break",       BREAK       }
         };
 
         private int start;
