@@ -78,7 +78,7 @@ public class UnaryExpr : Expr
 
 public class LiteralExpr : Expr
 {
-    public LiteralExpr(Token value)
+    public LiteralExpr(object? value)
     {
         this.value = value;
     }
@@ -88,5 +88,5 @@ public class LiteralExpr : Expr
         return visitor.visitLiteralExpr(this);
     }
     
-    public Token value;
+    public object? value;
 }

@@ -126,7 +126,7 @@ namespace Chonker
                         handleIdentifier();
                     } else
                     {
-                        //Report.syntaxError(line, "","Unexpected character."); // todo syntax error
+                        error(line, "","Unexpected character."); 
                     }
                     break;
             }
@@ -208,8 +208,9 @@ namespace Chonker
                 advance();
             }
 
-            if (isAtEnd()) {
-                // todo Report.syntaxError(line, current.ToString(), "Unterminated string.");
+            if (isAtEnd()) 
+            {
+                error(line, current.ToString(), "Unterminated string.");
                 return;
             }
 
@@ -259,12 +260,32 @@ namespace Chonker
             
         }
 
-        private bool isAlphaNumeric(char c) {
+        private bool isAlphaNumeric(char c) 
+        {
             return isAlpha(c) || isDigit(c);
         }
 
-        private bool isAtEnd() {
+        private bool isAtEnd() 
+        {
             return current >= source.Length;
         }
+
+        #region error
+
+        private void error(int line, string location, string message)
+        {
+            Console.WriteLine("Syntax error:");
+
+            if (location.Length > 0)
+            {
+                Console.WriteLine($"[{line}] {message} at {location}.");
+            }
+            else
+            {
+                Console.WriteLine($"[{line}] {message}.");
+            }
+        }
+
+        #endregion
     }
 }

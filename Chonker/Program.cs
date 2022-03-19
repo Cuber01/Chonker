@@ -1,22 +1,24 @@
-﻿using System;
-using Chonker.Expressions;
+﻿using Chonker.Expressions;
+using Chonker.Parsing;
 using Chonker.Tokens;
 using Chonker.Tools;
 using FakeOS.Tools;
 
-namespace Chonker // Note: actual namespace depends on the project name.
+namespace Chonker 
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Expr expression = new BinaryExpr(
-                new UnaryExpr(
-                    new Token(TokenType.MINUS, "-", null, 1),
-                    new LiteralExpr(new Token(TokenType.NUMBER, "123", null,1))),
-                new Token(TokenType.STAR, "*", null, 1),
-                new GroupedExpr(
-                    new LiteralExpr(new Token(TokenType.NUMBER, "45.67", null,1))));
+            Scanner scanner = new Scanner(FileReader.getFileString("./Tests/test.txt"));
+            List<Token> tokens = scanner.scanTokens();
+            Parser parser = new Parser(tokens);
+            Expr? expression = parser.parse();
+
+            if (expression is null)
+            {
+                return;
+            }
 
             Console.WriteLine(new AstPrinter().print(expression));
         }
