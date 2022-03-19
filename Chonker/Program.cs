@@ -14,13 +14,12 @@ namespace Chonker
             List<Token> tokens = scanner.scanTokens();
             Parser parser = new Parser(tokens);
             Expr? expression = parser.parse();
+            Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
+            interpreter.interpret(expression);
 
-            if (expression is null)
-            {
-                return;
-            }
-
+            
             Console.WriteLine(new AstPrinter().print(expression));
+
         }
     }
 }

@@ -11,6 +11,6 @@ public class ParseError : Exception
 
     public override string ToString()
     {
-        return $"Exception. Message: {message}";
+        return $"Parse Error:\n {message}";
     }
 }

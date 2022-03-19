@@ -10,6 +10,8 @@ public class Parser
     private readonly List<Token> tokens;
     private int currentIndex;
 
+    public bool hadError = false;
+    
     public Parser(List<Token> tokens)
     {
         this.tokens = tokens;
@@ -132,7 +134,7 @@ public class Parser
     {
         foreach (var type in types)
         {
-            if (currentToken().type == type)
+            if (check(type))
             {
                 advance();
                 return true;
@@ -140,6 +142,16 @@ public class Parser
         }
 
         return false;
+    }
+    
+    private bool check(TokenType type) {
+        if (isAtEnd()) return false;
+        return peek().type == type;
+    }
+    
+    private Token peek()
+    {
+        return tokens.ElementAt(currentIndex);
     }
 
     private void advance()
@@ -172,6 +184,8 @@ public class Parser
 
     private void error(Token token, string message)
     {
+        hadError = true;
+        
         string fancyMessage;
 
         if (token.type == TokenType.EOF)
@@ -186,6 +200,7 @@ public class Parser
         Console.WriteLine(fancyMessage);
         
         throw new ParseError(fancyMessage);
+        
     }
     
     private void synchronize() 
