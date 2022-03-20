@@ -14,7 +14,8 @@ namespace Chonker
             List<Token> tokens = scanner.scanTokens();
             Parser parser = new Parser(tokens);
             Expr? expression = parser.parse();
-
+            
+            
             if (expression is null)
             {
                 Environment.Exit(0);

@@ -45,13 +45,19 @@ public class Interpreter : Expr.IVisitor<Object>
         {
             
             case MINUS:
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
                 return (double)left - (double)right; 
             case SLASH: 
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
+
+                if (right.Equals(0.0))
+                {
+                    error(expr.operant, "Attempt to divide by zero");
+                }
+                
                 return (double)left / (double)right;
             case STAR: 
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
                 return (double)left * (double)right;
             case PLUS:
             {
@@ -70,16 +76,16 @@ public class Interpreter : Expr.IVisitor<Object>
             }
             
             case GREATER:
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
                 return (double)left > (double)right;
             case GREATER_EQUAL:
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
                 return (double)left >= (double)right;
             case LESS:
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
                 return (double)left < (double)right;
             case LESS_EQUAL:
-                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers.", expr.operant);
+                checkOperands(left, right, typeof(Double), typeof(Double), "Both operands should be numbers", expr.operant);
                 return (double)left <= (double)right;
             
             case BANG_EQUAL: 
