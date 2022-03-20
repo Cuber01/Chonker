@@ -13,16 +13,18 @@ We basically visit and evaluate every expression into values/literals, and then 
 */
 
 
-public class Interpreter : Expr.IVisitor<Object>
+public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
     public bool hadError = false;
     
-    public void interpret(Expr expression)
+    public void interpret(List<Stmt> statements)
     { 
         try 
         {
-            Object value = evaluate(expression);
-            Console.WriteLine(stringify(value));
+            foreach (var stmt in statements)
+            {
+                execute(stmt);
+            }
         } catch (InterpreterError error)
         {
             Console.WriteLine(error.Message);
@@ -34,7 +36,29 @@ public class Interpreter : Expr.IVisitor<Object>
         return expr.accept(this);
     }
 
-    #region Main
+    #region Statements
+    
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
+    }
+
+    public object? visitPrintStmt(PrintStmt stmt)
+    {
+        object result = evaluate(stmt.expression);
+        Console.WriteLine(stringify(result));
+        return null;
+    }
+
+    public object? visitExpressionStmt(ExpressionStmt stmt)
+    {
+        evaluate(stmt.expression);
+        return null;
+    }
+    
+
+    #endregion
+
+    #region Expressions
     
     public object visitBinaryExpr(BinaryExpr expr)
     {
@@ -156,7 +180,7 @@ public class Interpreter : Expr.IVisitor<Object>
     {
         string text = obj.ToString()!;
 
-        if (text!.EndsWith(".0"))
+        if (text.EndsWith(".0"))
         {
             text = text.Substring(0, text.Length - 2);
         }
@@ -200,5 +224,4 @@ public class Interpreter : Expr.IVisitor<Object>
 
     #endregion
     
-
 }

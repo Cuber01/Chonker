@@ -13,19 +13,13 @@ namespace Chonker
             Scanner scanner = new Scanner(FileReader.getFileString("./Tests/test.txt"));
             List<Token> tokens = scanner.scanTokens();
             Parser parser = new Parser(tokens);
-            Expr? expression = parser.parse();
-            
-            
-            if (expression is null)
-            {
-                Environment.Exit(0);
-            }
+            List<Stmt> statements = parser.parse();
             
             Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
-            interpreter.interpret(expression);
+            interpreter.interpret(statements);
 
             
-            Console.WriteLine(new AstPrinter().print(expression));
+            //Console.WriteLine(new AstPrinter().print(statements));
 
         }
     }

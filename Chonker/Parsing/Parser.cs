@@ -39,17 +39,47 @@ public class Parser
         this.tokens = tokens;
     }
     
-    public Expr? parse() 
+    public List<Stmt> parse()
     {
-        try {
-            return expression();
-        } catch (ParseError) {
-            return null;
+        List<Stmt> statements = new List<Stmt>();
+       
+        while (!isAtEnd()) 
+        {
+            statements.Add(statement());
         }
+
+        return statements; 
+    }
+
+    #region Statements
+
+    private Stmt statement()
+    {
+        if (isMatchConsume(PRINT)) return printStatement();
+
+        return expressionStatement();
+    }
+    
+    private Stmt expressionStatement()
+    {
+        Expr expr = expression();
+        consumeError(SEMICOLON, "Expect ';' after expression");
+        return new ExpressionStmt(expr);
+    }
+    
+    private Stmt printStatement() 
+    {
+        Expr value = expression();
+        consumeError(SEMICOLON, "Expect ';' after value");
+        return new PrintStmt(value);
     }
 
 
-    #region Main
+
+
+    #endregion
+    
+    #region Expressions
 
     private Expr expression() 
     {
