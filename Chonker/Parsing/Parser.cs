@@ -64,9 +64,11 @@ public class Parser
 
             return statement();
         } 
-        catch (ParseError)
+        catch (Error error)
         {
+            error.writeMessage();
             synchronize();
+            
             return null!;
         }
     }
@@ -241,12 +243,11 @@ public class Parser
             }
         }
         
-        
 
         // Retract from advancing.
         retract();
         
-        error(currentToken(), "Expect expression.");
+        error(currentToken(), "Expect expression");
 
         return null!;
     }
@@ -310,21 +311,17 @@ public class Parser
     {
         hadError = true;
         
-        string fancyMessage;
-
+        string where;
+        
         if (token.type == TokenType.EOF)
         {
-            fancyMessage = $"[{token.line}] {message} at end.";
+            where = "at end.";
         } else 
         {
-            fancyMessage = $"[{token.line}] {message} at {token.lexeme}.";
+            where = $"at {token.lexeme}.";
         }
-
-        Console.WriteLine("Parsing error:");
-        Console.WriteLine(fancyMessage);
         
-        throw new ParseError(fancyMessage);
-        
+        throw new Error("Interpreter", message, where, token.line);
     }
     
     private void synchronize() 

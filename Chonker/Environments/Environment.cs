@@ -7,14 +7,14 @@ public class Environment
 {
     private Dictionary<string, object?> variables = new Dictionary<string, object?>();
 
-    public void define(string name, object? value)
+    public void define(Token name, object? value)
     {
-        if (variables.Keys.Contains(name))
+        if (variables.Keys.Contains(name.lexeme))
         {
-            throw new InterpreterError($"Interpret error:\n Tried to declare variable " + name + ", but it already exists.");
+            throw new Error("Interpret","Tried to declare variable " + name.lexeme + ", but it already exists", "", name.line);
         }
         
-        variables.Add(name, value);
+        variables.Add(name.lexeme, value);
     }
 
     public object getValue(Token name)
@@ -24,7 +24,7 @@ public class Environment
             return variables[name.lexeme]!;
         }
         
-        throw new InterpreterError($"Interpret error:\n [{name.line}] Unknown variable '" + name + $"' at [{name.lexeme}].");
+        throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
     }
     
     public void assign(Token name, Object value) {
@@ -35,7 +35,7 @@ public class Environment
             return;
         }
 
-        throw new InterpreterError($"Interpret error:\n  [{name.line}] Undefined variable '" + name.lexeme + $"' at [{name.lexeme}].");
+        throw new Error("Interpreter","Undefined variable '" + name.lexeme + "'" , $"at [{name.lexeme}]", name.line);
     }
 
     #region Error

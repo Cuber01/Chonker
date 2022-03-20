@@ -26,9 +26,9 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             {
                 execute(stmt);
             }
-        } catch (InterpreterError error)
+        } catch (Error error)
         {
-            Console.WriteLine(error.Message);
+            error.writeMessage();
         }
     }
     
@@ -65,7 +65,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             value = evaluate(stmt.initializer);
         }
 
-        environment.define(stmt.name.lexeme, value);
+        environment.define(stmt.name, value);
         return null;
     }
 
@@ -108,7 +108,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
                     return (String)left + (String)right;
                 }
 
-                error(expr.operant, "Operands have to be either both numbers or strings.");
+                error(expr.operant, "Operands have to be either both numbers or strings");
                 break;
             }
             
@@ -221,20 +221,17 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         hadError = true;
         
-        string fancyMessage;
+        string where;
         
         if (token.type == TokenType.EOF)
         {
-            fancyMessage = $"[{token.line}] {message} at end.";
+            where = "at end.";
         } else 
         {
-            fancyMessage = $"[{token.line}] {message} at {token.lexeme}.";
+            where = $"at {token.lexeme}.";
         }
         
-        Console.WriteLine("Interpreting error:");
-        Console.WriteLine(fancyMessage);
-                
-        throw new InterpreterError(message);
+        throw new Error("Interpreter", message, where, token.line);
     }
     
     private void checkOperands(object left, object right, Type typeLeft, Type typeRight, string errorMessage, Token token)

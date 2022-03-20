@@ -14,6 +14,8 @@ namespace Chonker
 {
     public class Scanner
     {
+        public bool hadError = false;
+        
         private readonly string source;
         public readonly List<Token> tokens = new List<Token>();
         
@@ -41,7 +43,7 @@ namespace Chonker
         private int start;
         private int current;
         private int line = 1;
-        
+
         public Scanner(string source) 
         {
             this.source = source;
@@ -50,10 +52,21 @@ namespace Chonker
         public List<Token> scanTokens() 
         {
             
-            while (!isAtEnd()) {
+            while (!isAtEnd()) 
+            {
                 // We are at the beginning of the next lexeme.
                 start = current;
-                scanToken();
+                
+                try
+                {
+                    scanToken();
+                }
+                catch (Error error)
+                {
+                    error.writeMessage();
+                    hadError = true;
+                }
+
             }
 
             tokens.Add(new Token(EOF, "", null, line));
@@ -135,7 +148,7 @@ namespace Chonker
                         handleIdentifier();
                     } else
                     {
-                        error(line, "","Unexpected character."); 
+                        throw new Error("Scanner", "Unexpected character '" + current + "'", "", line); 
                     }
                     break;
             }
@@ -219,8 +232,7 @@ namespace Chonker
 
             if (isAtEnd()) 
             {
-                error(line, current.ToString(), "Unterminated string.");
-                return;
+                throw new Error("Scanner","Unterminated string", "at " + current, line);
             }
 
             // The closing "
@@ -278,23 +290,6 @@ namespace Chonker
         {
             return current >= source.Length;
         }
-
-        #region error
-
-        private void error(int line, string location, string message)
-        {
-            Console.WriteLine("Syntax error:");
-
-            if (location.Length > 0)
-            {
-                Console.WriteLine($"[{line}] {message} at {location}.");
-            }
-            else
-            {
-                Console.WriteLine($"[{line}] {message}.");
-            }
-        }
-
-        #endregion
+        
     }
 }
