@@ -86,6 +86,9 @@ public class Interpreter : Expr.IVisitor<Object>
                 return !isEqual(left, right);
             case EQUAL_EQUAL: 
                 return isEqual(left, right);
+            
+            case COMMA:
+                return right;
         }
 
         return null!;

@@ -117,11 +117,25 @@ public class Parser
         if (isMatchConsume(BANG, MINUS))
         {
             Token operant = previousToken();
-            Expr right = primary();
+            Expr right = comma();
             return new UnaryExpr(operant, right);
         }
         
-        return primary();
+        return comma();
+    }
+
+    private Expr comma()
+    {
+        Expr expr = primary();
+            
+        while (isMatchConsume(COMMA))
+        {
+            Token operant = previousToken();
+            Expr right = primary();
+            expr = new BinaryExpr(expr, operant, right);
+        }
+        
+        return expr;
     }
     
     private Expr primary()
