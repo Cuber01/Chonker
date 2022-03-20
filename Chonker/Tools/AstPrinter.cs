@@ -3,17 +3,38 @@ using Chonker.Expressions;
 
 namespace Chonker.Tools;
 
-public class AstPrinter : Expr.IVisitor<String>
+public class AstPrinter : Expr.IVisitor<String>, Stmt.IVisitor<String>
 {
     private const string exprTypeColor = "\u001b[0;32m";
     private const string parenthesisColor = "\u001b[0;34m";
     private const string resetColor = "\u001b[0m";
     
-    public string print(Expr expr)
+    public string print(Stmt stmt)
     {
-        return expr.accept(this);
+       return stmt.accept(this);
     }
-    
+
+    #region Statements
+
+    public string visitPrintStmt(PrintStmt stmt)
+    {
+        return build("print", stmt.expression);
+    }
+
+    public string visitExpressionStmt(ExpressionStmt stmt)
+    {
+        return stmt.accept(this);
+    }
+
+    public string visitVariableStmt(VariableStmt stmt)
+    {
+        return build(stmt.name.lexeme, stmt.initializer!);
+    }
+
+    #endregion
+
+    #region Expressions
+
     public string visitBinaryExpr(BinaryExpr expr)
     {
         return build(expr.operant.lexeme, expr.left, expr.right);
@@ -26,7 +47,7 @@ public class AstPrinter : Expr.IVisitor<String>
 
     public string visitLiteralExpr(LiteralExpr expr)
     {
-        return expr.value.ToString();
+        return expr.value!.ToString()!;
     }
 
     public string visitUnaryExpr(UnaryExpr expr)
@@ -36,14 +57,17 @@ public class AstPrinter : Expr.IVisitor<String>
 
     public string visitAssignExpr(AssignExpr expr)
     {
-        return build(expr.name.lexeme, expr); // todo
+        return build(expr.name.lexeme, expr); 
     }
 
     public string visitVariableExpr(VariableExpr expr)
     {
-        return build(expr.name.lexeme, expr); // todo
+        return build(expr.name.lexeme); 
     }
-
+    
+    #endregion
+    
+    
     private string build(string type, params Expr[] expressions)
     {
         StringBuilder builder = new StringBuilder();
