@@ -154,10 +154,13 @@ public class Parser
 
             case LEFT_PAREN:
             {
+                GroupedExpr expr = new GroupedExpr(expression());
                 consumeError(RIGHT_PAREN, "Expect ')' after expression.");
-                return new GroupedExpr(expression());
+                return expr;
             }
         }
+        
+        
 
         // Retract from advancing.
         retract();
