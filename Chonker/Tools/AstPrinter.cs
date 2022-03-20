@@ -3,7 +3,7 @@ using Chonker.Expressions;
 
 namespace Chonker.Tools;
 
-public class AstPrinter : Expr.IVisitor<String>, Stmt.IVisitor<String>
+public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
 {
     private const string exprTypeColor = "\u001b[0;32m";
     private const string parenthesisColor = "\u001b[0;34m";
@@ -11,7 +11,7 @@ public class AstPrinter : Expr.IVisitor<String>, Stmt.IVisitor<String>
     
     public string print(Stmt stmt)
     {
-       return stmt.accept(this);
+       return stmt.accept(this)!;
     }
 
     #region Statements
@@ -21,7 +21,7 @@ public class AstPrinter : Expr.IVisitor<String>, Stmt.IVisitor<String>
         return build("print", stmt.expression);
     }
 
-    public string visitExpressionStmt(ExpressionStmt stmt)
+    public string? visitExpressionStmt(ExpressionStmt stmt)
     {
         return stmt.accept(this);
     }
@@ -45,9 +45,14 @@ public class AstPrinter : Expr.IVisitor<String>, Stmt.IVisitor<String>
         return build("group", expr.expression);
     }
 
-    public string visitLiteralExpr(LiteralExpr expr)
+    public string? visitLiteralExpr(LiteralExpr expr)
     {
-        return expr.value!.ToString()!;
+        if (expr.value is null)
+        {
+            return "null";
+        }
+        
+        return expr.value.ToString();
     }
 
     public string visitUnaryExpr(UnaryExpr expr)

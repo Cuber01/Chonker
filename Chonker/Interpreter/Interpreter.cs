@@ -201,8 +201,13 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         return left.Equals(right);
     }
 
-    private string stringify(object obj)
+    private string stringify(object? obj)
     {
+        if (obj is null)
+        {
+            return "null";
+        }
+        
         string text = obj.ToString()!;
 
         if (text.EndsWith(".0"))
