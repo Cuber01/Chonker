@@ -24,6 +24,8 @@ public abstract class Expr
         TResult visitGroupedExpr(GroupedExpr expr);
         TResult visitLiteralExpr(LiteralExpr expr);
         TResult visitUnaryExpr(UnaryExpr expr);
+        TResult visitAssignExpr(AssignExpr expr);
+        TResult visitVariableExpr(VariableExpr expr);
     }
 }
 
@@ -77,8 +79,40 @@ public class UnaryExpr : Expr
         return visitor.visitUnaryExpr(this);
     }
     
-    public Expr target;
-    public Token operant;
+    public readonly Expr target;
+    public readonly Token operant;
+}
+
+public class VariableExpr : Expr
+{
+    public VariableExpr(Token name)
+    {
+        this.name = name;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitVariableExpr(this);
+    }
+
+    public Token name;
+}
+
+public class AssignExpr : Expr
+{
+    public AssignExpr(Token name, object? value)
+    {
+        this.name = name;
+        this.value = value;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitAssignExpr(this);
+    }
+
+    public Token name;
+    public object? value;
 }
 
 public class LiteralExpr : Expr

@@ -45,7 +45,7 @@ public class Parser
        
         while (!isAtEnd()) 
         {
-            statements.Add(statement());
+            statements.Add(declaration());
         }
 
         return statements; 
@@ -53,6 +53,38 @@ public class Parser
 
     #region Statements
 
+    private Stmt declaration()
+    {
+        try 
+        {
+            if (isMatchConsume(VAR))
+            {
+                return varDeclaration();
+            }
+
+            return statement();
+        } 
+        catch (ParseError)
+        {
+            synchronize();
+            return null!;
+        }
+    }
+    
+    private Stmt varDeclaration() 
+    {
+        Token name = consumeError(IDENTIFIER, "Expect variable name");
+
+        Expr initializer = null!;
+        if (isMatchConsume(EQUAL)) 
+        {
+            initializer = expression();
+        }
+
+        consumeError(SEMICOLON, "Expect ';' after variable declaration.");
+        return new VariableStmt(name, initializer);
+    }
+    
     private Stmt statement()
     {
         if (isMatchConsume(PRINT)) return printStatement();
@@ -73,17 +105,35 @@ public class Parser
         consumeError(SEMICOLON, "Expect ';' after value");
         return new PrintStmt(value);
     }
-
-
-
-
+    
     #endregion
     
     #region Expressions
 
     private Expr expression() 
     {
-        return equality();
+        return assignment();
+    }
+
+    private Expr assignment()
+    {
+        Expr expr = equality();
+
+        if (isMatchConsume(EQUAL))
+        {
+            Token equals = previousToken();
+            Expr value = assignment();
+
+            if (expr is VariableExpr)
+            { //todo
+                Token name = ((VariableExpr)expr).name;
+                return new AssignExpr(name, value);
+            }
+
+            error(equals, "Invalid assignment target."); 
+        }
+
+        return expr;
     }
     
     private Expr equality()
@@ -181,6 +231,7 @@ public class Parser
             case NULL:   return new LiteralExpr(null);  
             case NUMBER: return new LiteralExpr(oldToken.literal); 
             case STRING: return new LiteralExpr(oldToken.literal); 
+            case IDENTIFIER: return new VariableExpr(previousToken());
 
             case LEFT_PAREN:
             {
@@ -230,15 +281,17 @@ public class Parser
         currentIndex++;
     }
 
-    private void consumeError(TokenType type, string errorMessage)
+    private Token consumeError(TokenType type, string errorMessage)
     {
         if (currentToken().type == type)
         {
             advance();
-            return;
+            return previousToken();
         }
 
         error(currentToken(), errorMessage);
+        
+        return null!;
     }
     
 

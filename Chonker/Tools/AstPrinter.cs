@@ -33,7 +33,17 @@ public class AstPrinter : Expr.IVisitor<String>
     {
         return build(expr.operant.lexeme, expr.target);
     }
-    
+
+    public string visitAssignExpr(AssignExpr expr)
+    {
+        return build(expr.name.lexeme, expr); // todo
+    }
+
+    public string visitVariableExpr(VariableExpr expr)
+    {
+        return build(expr.name.lexeme, expr); // todo
+    }
+
     private string build(string type, params Expr[] expressions)
     {
         StringBuilder builder = new StringBuilder();

@@ -10,6 +10,7 @@ namespace Chonker
     {
         static void Main(string[] args)
         {
+
             Scanner scanner = new Scanner(FileReader.getFileString("./Tests/test.txt"));
             List<Token> tokens = scanner.scanTokens();
             Parser parser = new Parser(tokens);

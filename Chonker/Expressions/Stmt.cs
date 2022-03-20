@@ -1,3 +1,5 @@
+using Chonker.Tokens;
+
 namespace Chonker.Expressions;
 
 public abstract class Stmt
@@ -8,7 +10,7 @@ public abstract class Stmt
     {
         TResult visitPrintStmt(PrintStmt stmt);
         TResult visitExpressionStmt(ExpressionStmt stmt);
-
+        TResult visitVariableStmt(VariableStmt stmt);
     }
 }
 
@@ -40,4 +42,21 @@ public class ExpressionStmt : Stmt
     }
 
     public Expr expression;
+}
+
+public class VariableStmt : Stmt
+{
+    public VariableStmt(Token name, Expr initializer)
+    {
+        this.initializer = initializer;
+        this.name = name;
+    }
+
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitVariableStmt(this);
+    }
+
+    public Token name;
+    public Expr? initializer;
 }

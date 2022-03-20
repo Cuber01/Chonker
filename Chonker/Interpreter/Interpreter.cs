@@ -15,6 +15,7 @@ We basically visit and evaluate every expression into values/literals, and then 
 
 public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
+    private Environments.Environment environment = new Environments.Environment();
     public bool hadError = false;
     
     public void interpret(List<Stmt> statements)
@@ -54,7 +55,19 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         evaluate(stmt.expression);
         return null;
     }
-    
+
+    public object? visitVariableStmt(VariableStmt stmt)
+    {
+        object? value = null;
+        
+        if (stmt.initializer is not null)
+        {
+            value = evaluate(stmt.initializer);
+        }
+
+        environment.define(stmt.name.lexeme, value);
+        return null;
+    }
 
     #endregion
 
@@ -148,7 +161,19 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         // Unreachable.
         return null!;
     }
-    
+
+    public object visitAssignExpr(AssignExpr expr)
+    {
+        object value = evaluate(expr);
+        environment.assign(expr.name, value);
+        return value;
+    }
+
+    public object visitVariableExpr(VariableExpr expr)
+    {
+        return environment.getValue(expr.name);
+    }
+
     #endregion
 
     #region Util
