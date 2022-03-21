@@ -6,9 +6,9 @@ namespace Chonker.Interpreter;
 
 /*
 
-This is the interpreter. An interpreter gets expressions and executes them.
+This is the interpreter. An interpreter gets statements/expressions and executes them.
  
-We basically visit and evaluate every expression into values/literals, and then use the values with the given operand. 
+We basically visit and evaluate every statement and expression into values/literals, and then use the values with the given operand/other stuff. 
   
 */
 
@@ -16,7 +16,7 @@ We basically visit and evaluate every expression into values/literals, and then 
 public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
     private Environments.Environment environment = new Environments.Environment();
-    public bool hadError = false;
+    public bool hadError;
     
     public void interpret(List<Stmt> statements)
     { 
@@ -231,7 +231,8 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         if (token.type == TokenType.EOF)
         {
             where = "at end.";
-        } else 
+        } 
+        else 
         {
             where = $"at {token.lexeme}.";
         }

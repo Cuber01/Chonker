@@ -1,3 +1,3 @@
-var a = null;
-var b = 3;
-print a == null;
+var a = 2, b = 1;
+
+print a;

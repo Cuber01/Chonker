@@ -29,10 +29,11 @@ To see what expressions are, go to Expressions/Expr.cs
 
 public class Parser
 {
+    private List<Stmt> statements = new List<Stmt>();
     private readonly List<Token> tokens;
     private int currentIndex;
 
-    public bool hadError = false;
+    public bool hadError;
     
     public Parser(List<Token> tokens)
     {
@@ -41,8 +42,6 @@ public class Parser
     
     public List<Stmt> parse()
     {
-        List<Stmt> statements = new List<Stmt>();
-       
         while (!isAtEnd()) 
         {
             statements.Add(declaration());
@@ -83,7 +82,13 @@ public class Parser
             initializer = expression();
         }
 
-        consumeError(SEMICOLON, "Expect ';' after variable declaration.");
+        if (isMatchConsume(COMMA))
+        {
+            statements.Add(varDeclaration()); // WARNING: ADD STATEMENT IN LOOP
+            return new VariableStmt(name, initializer);
+        }
+
+        consumeError(SEMICOLON, "Expect ';' after variable declaration");
         return new VariableStmt(name, initializer);
     }
     
@@ -199,27 +204,13 @@ public class Parser
         if (isMatchConsume(BANG, MINUS))
         {
             Token operant = previousToken();
-            Expr right = comma();
+            Expr right = primary();
             return new UnaryExpr(operant, right);
         }
         
-        return comma();
+        return primary();
     }
 
-    private Expr comma()
-    {
-        Expr expr = primary();
-            
-        while (isMatchConsume(COMMA))
-        {
-            Token operant = previousToken();
-            Expr right = primary();
-            expr = new BinaryExpr(expr, operant, right);
-        }
-        
-        return expr;
-    }
-    
     private Expr primary()
     {
         // This is basically a hack for not using matchConsume(). Should we find something, advance, nothing found? then retract from advancing.
@@ -263,6 +254,19 @@ public class Parser
             if (tokens[currentIndex].type == type)
             {
                 advance();
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    private bool isMatch(params TokenType[] types)
+    {
+        foreach (var type in types)
+        {
+            if (tokens[currentIndex].type == type)
+            {
                 return true;
             }
         }
