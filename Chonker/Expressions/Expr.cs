@@ -18,7 +18,7 @@ public abstract class Expr
 {
     public abstract TResult accept<TResult>(IVisitor<TResult> visitor);
 
-    public interface IVisitor<TResult>
+    public interface IVisitor<out TResult>
     {
         TResult visitBinaryExpr(BinaryExpr expr);
         TResult visitGroupedExpr(GroupedExpr expr);
@@ -44,9 +44,9 @@ public class BinaryExpr : Expr
         return visitor.visitBinaryExpr(this);
     }
     
-    public Expr left;
-    public Token operant;
-    public Expr right;
+    public readonly Expr left;
+    public readonly Token operant;
+    public readonly Expr right;
     
 }
 
@@ -63,7 +63,7 @@ public class GroupedExpr : Expr
         return visitor.visitGroupedExpr(this);
     }
     
-    public Expr expression;
+    public readonly Expr expression;
 }
 
 public class UnaryExpr : Expr
@@ -95,7 +95,7 @@ public class VariableExpr : Expr
         return visitor.visitVariableExpr(this);
     }
 
-    public Token name;
+    public readonly Token name;
 }
 
 public class AssignExpr : Expr
@@ -110,6 +110,7 @@ public class AssignExpr : Expr
     {
         return visitor.visitAssignExpr(this);
     }
+
 
     public Token name;
     public Expr value;
@@ -127,5 +128,5 @@ public class LiteralExpr : Expr
         return visitor.visitLiteralExpr(this);
     }
     
-    public object? value;
+    public readonly object? value;
 }

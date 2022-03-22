@@ -1,3 +1,4 @@
+using System.Reflection;
 using Chonker.Expressions;
 using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
@@ -63,6 +64,13 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         if (stmt.initializer is not null)
         {
             value = evaluate(stmt.initializer);
+        }
+        
+        if ( !(value is null || value.GetType() == stmt.type) )
+        {
+            error(stmt.name, $"Cannot convert type {stmt.type} to {value.GetType()}");
+
+            return null;
         }
 
         environment.define(stmt.name, value);
@@ -165,6 +173,15 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     public object visitAssignExpr(AssignExpr expr)
     {
         object value = evaluate(expr.value);
+        
+        Type varType = environment.getType(expr.name);
+        if ( !(value.GetType() == varType) )
+        {
+            error(expr.name, $"Cannot convert type {varType} to {value.GetType()}");
+
+            return null!;
+        }
+        
         environment.assign(expr.name, value);
         return value;
     }

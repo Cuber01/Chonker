@@ -37,7 +37,9 @@ namespace Chonker
             { "true",        TRUE        },
             { "var",         VAR         },
             { "while",       WHILE       },
-            { "break",       BREAK       }
+            { "break",       BREAK       },
+            { "string",      STRING_KW   },
+            { "number",      NUMBER_KW   },
         };
 
         private int start;

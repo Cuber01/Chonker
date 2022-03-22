@@ -6,7 +6,7 @@ public abstract class Stmt
 {
     public abstract TResult accept<TResult>(IVisitor<TResult> visitor);
 
-    public interface IVisitor<TResult>
+    public interface IVisitor<out TResult>
     {
         TResult visitPrintStmt(PrintStmt stmt);
         TResult visitExpressionStmt(ExpressionStmt stmt);
@@ -26,7 +26,7 @@ public class PrintStmt : Stmt
         return visitor.visitPrintStmt(this);
     }
 
-    public Expr expression;
+    public readonly Expr expression;
 }
 
 public class ExpressionStmt : Stmt
@@ -46,10 +46,11 @@ public class ExpressionStmt : Stmt
 
 public class VariableStmt : Stmt
 {
-    public VariableStmt(Token name, Expr initializer)
+    public VariableStmt(Token name, Type? type, Expr initializer)
     {
         this.initializer = initializer;
         this.name = name;
+        this.type = type;
     }
 
     public override TResult accept<TResult>(IVisitor<TResult> visitor)
@@ -57,6 +58,8 @@ public class VariableStmt : Stmt
         return visitor.visitVariableStmt(this);
     }
 
-    public Token name;
-    public Expr? initializer;
+    public readonly Token name;
+    public readonly Type? type;
+    
+    public readonly Expr? initializer;
 }

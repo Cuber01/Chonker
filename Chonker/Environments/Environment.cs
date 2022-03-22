@@ -26,6 +26,16 @@ public class Environment
         
         throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
     }
+
+    public Type getType(Token name)
+    {
+        if (variables.ContainsKey(name.lexeme))
+        {
+            return variables[name.lexeme]!.GetType();
+        }
+        
+        throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
+    }
     
     public void assign(Token name, Object value) {
         

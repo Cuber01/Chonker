@@ -74,6 +74,7 @@ public class Parser
     
     private Stmt varDeclaration() 
     {
+        Token type = consumeMultipleError("Expect variable type.", STRING_KW, NUMBER_KW);
         Token name = consumeError(IDENTIFIER, "Expect variable name");
 
         Expr initializer = null!;
@@ -85,11 +86,11 @@ public class Parser
         if (isMatchConsume(COMMA))
         {
             statements.Add(varDeclaration()); // WARNING: ADD STATEMENT IN LOOP
-            return new VariableStmt(name, initializer);
+            return new VariableStmt(name, tokenToType(type.type), initializer);
         }
 
         consumeError(SEMICOLON, "Expect ';' after variable declaration");
-        return new VariableStmt(name, initializer);
+        return new VariableStmt(name, tokenToType(type.type), initializer);
     }
     
     private Stmt statement()
@@ -131,9 +132,9 @@ public class Parser
             Token equals = previousToken();
             Expr value = assignment();
 
-            if (expr is VariableExpr)
-            { //todo
-                Token name = ((VariableExpr)expr).name;
+            if (expr is VariableExpr variableExpr)
+            { 
+                Token name = variableExpr.name;
                 return new AssignExpr(name, value);
             }
 
@@ -260,19 +261,6 @@ public class Parser
 
         return false;
     }
-    
-    private bool isMatch(params TokenType[] types)
-    {
-        foreach (var type in types)
-        {
-            if (tokens[currentIndex].type == type)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private void retract()
     {
@@ -298,6 +286,22 @@ public class Parser
         
         return null!;
     }
+
+    private Token consumeMultipleError(string errorMessage, params TokenType[] types)
+    {
+        foreach (var type in types)
+        {
+            if (currentToken().type == type)
+            {
+                advance();
+                return previousToken();
+            }
+        }
+        
+        error(currentToken(), errorMessage);
+        
+        return null!;
+    }
     
 
     private bool isAtEnd() => currentIndex == tokens.Count - 1;
@@ -307,6 +311,16 @@ public class Parser
 
     private Token previousToken() => tokens.ElementAt(currentIndex - 1);
 
+    private Type? tokenToType(TokenType type)
+    {
+        if (type is NULL) return null;
+        if (type is NUMBER_KW) return typeof(Double);
+        if (type is STRING_KW) return typeof(String);
+
+        throw new Error("a", "b", "c", 1);
+    }
+    
+    
     #endregion
 
     #region Error
