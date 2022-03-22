@@ -1,5 +1,4 @@
-var string a = "coping", number b = 1;
-
-a = "hello";
+var number a = 2 * (1 + 1);
 
 print a;
+print 3;
