@@ -11,7 +11,7 @@ namespace Chonker
         static void Main(string[] args)
         {
 
-            Scanner scanner = new Scanner(FileReader.getFileString("./Tests/test.txt"));
+            Scanner scanner = new Scanner(FileReader.getFileString(args[0]));
             List<Token> tokens = scanner.scanTokens();
 
             if (scanner.hadError)
