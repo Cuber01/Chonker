@@ -100,7 +100,7 @@ public class VariableExpr : Expr
 
 public class AssignExpr : Expr
 {
-    public AssignExpr(Token name, object? value)
+    public AssignExpr(Token name, Expr value)
     {
         this.name = name;
         this.value = value;
@@ -112,7 +112,7 @@ public class AssignExpr : Expr
     }
 
     public Token name;
-    public object? value;
+    public Expr value;
 }
 
 public class LiteralExpr : Expr

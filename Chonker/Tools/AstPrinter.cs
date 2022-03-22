@@ -23,12 +23,12 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
 
     public string? visitExpressionStmt(ExpressionStmt stmt)
     {
-        return stmt.accept(this);
+        return stmt.expression.accept(this);
     }
 
     public string visitVariableStmt(VariableStmt stmt)
     {
-        return build(stmt.name.lexeme, stmt.initializer!);
+        return build("var " + stmt.name.lexeme, stmt.initializer!);
     }
 
     #endregion
@@ -62,7 +62,7 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
 
     public string visitAssignExpr(AssignExpr expr)
     {
-        return build(expr.name.lexeme, expr); 
+        return build(expr.name.lexeme, expr.value); 
     }
 
     public string visitVariableExpr(VariableExpr expr)

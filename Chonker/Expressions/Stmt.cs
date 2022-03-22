@@ -41,7 +41,7 @@ public class ExpressionStmt : Stmt
         return visitor.visitExpressionStmt(this);
     }
 
-    public Expr expression;
+    public readonly Expr expression;
 }
 
 public class VariableStmt : Stmt

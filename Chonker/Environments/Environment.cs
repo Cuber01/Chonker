@@ -31,7 +31,7 @@ public class Environment
         
         if (variables.ContainsKey(name.lexeme))
         {
-            variables.Add(name.lexeme, value);
+            variables[name.lexeme] = value;
             return;
         }
 

@@ -164,7 +164,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     public object visitAssignExpr(AssignExpr expr)
     {
-        object value = evaluate(expr);
+        object value = evaluate(expr.value);
         environment.assign(expr.name, value);
         return value;
     }
