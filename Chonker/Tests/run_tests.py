@@ -1,10 +1,11 @@
 import os
+import subprocess
 
 path_to_exec = os.path.join("..", "bin", "Debug", "net6.0", "Chonker")
 
 path_to_good_tests = os.path.join("Main", "")
-path_to_output = os.path.join("Main", "Output")
-path_to_bad_tests = os.path.join("Error")
+path_to_output = os.path.join("Main", "Output", "")
+path_to_bad_tests = os.path.join("Error", "")
 
 
 def run_tests():
@@ -13,25 +14,35 @@ def run_tests():
 
 
 def run_good_tests():
-    tests = absolute_file_paths(path_to_good_tests)
-    outputs = absolute_file_paths(path_to_output)
+    tests = os.listdir(path_to_good_tests)
+    outputs = os.listdir(path_to_output)
 
     # Remove folders
-    # for filepath in tests:
-    #     if not "." in filepath:
-    #         tests.remove(filepath)
+    for filepath in tests:
+        if not ("." in filepath):
+            tests.remove(filepath)
 
-    print(tests)
+    tests = get_full_paths(tests, path_to_good_tests)
+    outputs = get_full_paths(outputs, path_to_output)
+
+    # Run tests
+    for test in tests:
+        result = subprocess.Popen([path_to_exec, test], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+
+        #print(result.communicate())
 
 
 def run_error_tests():
     return
 
 
-def absolute_file_paths(directory):
-    for dirpath, _, filenames in os.walk(directory):
-        for f in filenames:
-            yield os.path.abspath(os.path.join(dirpath, f))
+def get_full_paths(paths, additional_path):
+    tmp = []
+    for filepath in paths:
+        tmp.append(os.getcwd() + os.sep + additional_path + filepath)
+
+    return tmp
 
 
 run_tests()
