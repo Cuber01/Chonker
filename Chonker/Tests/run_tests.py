@@ -28,9 +28,7 @@ def run_good_tests():
     # Run tests
     for test in tests:
         result = subprocess.Popen([path_to_exec, test], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-
-
-        #print(result.communicate())
+        # print(result.communicate())
 
 
 def run_error_tests():
