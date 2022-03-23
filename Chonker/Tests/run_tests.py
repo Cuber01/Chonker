@@ -46,7 +46,17 @@ def run_good_tests():
 
 
 def run_error_tests():
-    return
+    tests = os.listdir(path_to_bad_tests)
+    tests = get_full_paths(tests, path_to_bad_tests)
+
+    for test in tests:
+        child = subprocess.Popen([path_to_exec, test], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        child.wait()
+
+        if child.returncode == 1:
+            print("Success")
+        else:
+            print("Failure")
 
 
 def get_full_paths(paths, additional_path):
