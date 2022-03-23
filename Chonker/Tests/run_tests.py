@@ -1,5 +1,6 @@
 import os
 import subprocess
+from pathlib import Path
 
 path_to_exec = os.path.join("..", "bin", "Debug", "net6.0", "Chonker")
 
@@ -27,8 +28,21 @@ def run_good_tests():
 
     # Run tests
     for test in tests:
-        result = subprocess.Popen([path_to_exec, test], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(result.communicate())
+        child = subprocess.Popen([path_to_exec, test], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        child.wait()
+
+        if child.returncode == 1:
+            print("Failure")
+        else:
+            for output in outputs:
+                if Path(output).stem in test:
+                    f = open(output, "r")
+                    contents = f.read()
+
+                    if contents == child.communicate()[0].decode("utf-8"):
+                        print("Success")
+                    else:
+                        print("Failure")
 
 
 def run_error_tests():

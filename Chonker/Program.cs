@@ -16,7 +16,7 @@ namespace Chonker
 
             if (scanner.hadError)
             {
-                return;
+                Environment.Exit(1);
             }
             
             Parser parser = new Parser(tokens);
@@ -29,11 +29,13 @@ namespace Chonker
 
             if (parser.hadError)
             {
-                return;
+                Environment.Exit(1);
             }
             
             Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
             interpreter.interpret(statements);
+
+            Environment.Exit(0);
 
         }
     }
