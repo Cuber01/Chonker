@@ -1,7 +1,7 @@
 var number a = 1;
 var string b = "hello", number c = 2;
 
-b = "not hello"
+b = "not hello";
 
 print a;
 print b;

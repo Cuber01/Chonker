@@ -22,10 +22,10 @@ namespace Chonker
             Parser parser = new Parser(tokens);
             List<Stmt> statements = parser.parse();
 
-            foreach (var stmt in statements)
-            {
-                Console.WriteLine(new AstPrinter().print(stmt));
-            }
+            // foreach (var stmt in statements)
+            // {
+            //     Console.WriteLine(new AstPrinter().print(stmt));
+            // }
 
             if (parser.hadError)
             {
