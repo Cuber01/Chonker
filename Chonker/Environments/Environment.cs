@@ -5,8 +5,14 @@ namespace Chonker.Environments;
 
 public class Environment
 {
-    private Dictionary<string, object?> variables = new Dictionary<string, object?>();
+    private readonly Dictionary<string, object?> variables = new Dictionary<string, object?>();
+    private readonly Environment? enclosing;
 
+    public Environment(Environment? enclosing)
+    {
+        this.enclosing = enclosing;
+    }
+    
     public void define(Token name, object? value)
     {
         if (variables.Keys.Contains(name.lexeme))
@@ -23,6 +29,8 @@ public class Environment
         {
             return variables[name.lexeme]!;
         }
+        
+        if (enclosing != null) return enclosing.getValue(name);
         
         throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
     }
@@ -42,6 +50,12 @@ public class Environment
         if (variables.ContainsKey(name.lexeme))
         {
             variables[name.lexeme] = value;
+            return;
+        }
+        
+        if (enclosing != null) 
+        {
+            enclosing.assign(name, value);
             return;
         }
 

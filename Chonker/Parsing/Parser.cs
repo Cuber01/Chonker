@@ -74,7 +74,7 @@ public class Parser
     
     private Stmt varDeclaration() 
     {
-        Token type = consumeMultipleError("Expect variable type.", STRING_KW, NUMBER_KW);
+        Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW);
         Token name = consumeError(IDENTIFIER, "Expect variable name");
 
         Expr initializer = null!;
@@ -95,7 +95,8 @@ public class Parser
     
     private Stmt statement()
     {
-        if (isMatchConsume(PRINT)) return printStatement();
+        if (isMatchConsume(PRINT)) return print();
+        if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
 
         return expressionStatement();
     }
@@ -106,8 +107,21 @@ public class Parser
         consumeError(SEMICOLON, "Expect ';' after expression");
         return new ExpressionStmt(expr);
     }
+
+    private List<Stmt> block()
+    {
+        List<Stmt> enclosedStmts = new List<Stmt>();
+
+        while (currentToken().type != RIGHT_BRACE && !isAtEnd())
+        {
+            enclosedStmts.Add(declaration());
+        }
+
+        consumeError(RIGHT_BRACE, "Expect '}' after block");
+        return enclosedStmts;
+    }
     
-    private Stmt printStatement() 
+    private Stmt print() 
     {
         Expr value = expression();
         consumeError(SEMICOLON, "Expect ';' after value");

@@ -1,4 +1,3 @@
-using System.Reflection;
 using Chonker.Expressions;
 using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
@@ -16,7 +15,7 @@ We basically visit and evaluate every statement and expression into values/liter
 
 public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
-    private Environments.Environment environment = new Environments.Environment();
+    private Environments.Environment environment = new Environments.Environment(null);
     public bool hadError;
     
     public void interpret(List<Stmt> statements)
@@ -38,17 +37,46 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         return expr.accept(this);
     }
-
-    #region Statements
     
+    #region Execution
+
     private void execute(Stmt stmt) {
         stmt.accept(this);
     }
+    
+    void executeBlock(List<Stmt> statements, Environments.Environment newEnv)
+    {
+        Environments.Environment previous = this.environment;
+        
+        try 
+        {
+            this.environment = newEnv;
+
+            foreach (Stmt statement in statements)
+            {
+                execute(statement);
+            }
+            
+        } finally
+        {
+            this.environment = previous;
+        }
+    }
+
+    #endregion
+
+    #region Statements
 
     public object? visitPrintStmt(PrintStmt stmt)
     {
         object result = evaluate(stmt.expression);
         Console.WriteLine(stringify(result));
+        return null;
+    }
+    
+    public object? visitBlockStmt(BlockStmt stmt)
+    {
+        executeBlock(stmt.statements, new Environments.Environment(environment));
         return null;
     }
 

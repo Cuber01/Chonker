@@ -11,6 +11,7 @@ public abstract class Stmt
         TResult visitPrintStmt(PrintStmt stmt);
         TResult visitExpressionStmt(ExpressionStmt stmt);
         TResult visitVariableStmt(VariableStmt stmt);
+        TResult visitBlockStmt(BlockStmt stmt);
     }
 }
 
@@ -27,6 +28,21 @@ public class PrintStmt : Stmt
     }
 
     public readonly Expr expression;
+}
+
+public class BlockStmt : Stmt
+{
+    public BlockStmt(List<Stmt> statements)
+    {
+        this.statements = statements;
+    }
+
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitBlockStmt(this);
+    }
+
+    public readonly List<Stmt> statements;
 }
 
 public class ExpressionStmt : Stmt

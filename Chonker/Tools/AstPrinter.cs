@@ -31,6 +31,16 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return build("var " + stmt.name.lexeme, stmt.initializer!);
     }
 
+    public string visitBlockStmt(BlockStmt stmt)
+    {
+        foreach (var statement in stmt.statements)
+        {
+            print(statement);
+        }
+
+        return "";
+    }
+
     #endregion
 
     #region Expressions
