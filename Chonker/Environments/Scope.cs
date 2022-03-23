@@ -3,12 +3,12 @@ using Chonker.Tokens;
 
 namespace Chonker.Environments;
 
-public class Environment
+public class Scope
 {
     private readonly Dictionary<string, object?> variables = new Dictionary<string, object?>();
-    private readonly Environment? enclosing;
+    private readonly Scope? enclosing;
 
-    public Environment(Environment? enclosing)
+    public Scope(Scope? enclosing)
     {
         this.enclosing = enclosing;
     }

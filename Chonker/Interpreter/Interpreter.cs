@@ -1,3 +1,4 @@
+using Chonker.Environments;
 using Chonker.Expressions;
 using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
@@ -15,7 +16,7 @@ We basically visit and evaluate every statement and expression into values/liter
 
 public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
-    private Environments.Environment environment = new Environments.Environment(null);
+    private Scope scope = new Scope(null);
     public bool hadError;
     
     public void interpret(List<Stmt> statements)
@@ -44,13 +45,13 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         stmt.accept(this);
     }
     
-    void executeBlock(List<Stmt> statements, Environments.Environment newEnv)
+    void executeBlock(List<Stmt> statements, Scope newEnv)
     {
-        Environments.Environment previous = this.environment;
+        Scope previous = this.scope;
         
         try 
         {
-            this.environment = newEnv;
+            this.scope = newEnv;
 
             foreach (Stmt statement in statements)
             {
@@ -59,7 +60,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             
         } finally
         {
-            this.environment = previous;
+            this.scope = previous;
         }
     }
 
@@ -76,7 +77,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     
     public object? visitBlockStmt(BlockStmt stmt)
     {
-        executeBlock(stmt.statements, new Environments.Environment(environment));
+        executeBlock(stmt.statements, new Scope(scope));
         return null;
     }
 
@@ -102,7 +103,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             return null;
         }
 
-        environment.define(stmt.name, value);
+        scope.define(stmt.name, value);
         return null;
     }
 
@@ -203,7 +204,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         object value = evaluate(expr.value);
         
-        Type varType = environment.getType(expr.name);
+        Type varType = scope.getType(expr.name);
         if ( !(value.GetType() == varType) )
         {
             error(expr.name, $"Cannot convert type {varType} to {value.GetType()}");
@@ -211,13 +212,13 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             return null!;
         }
         
-        environment.assign(expr.name, value);
+        scope.assign(expr.name, value);
         return value;
     }
 
     public object visitVariableExpr(VariableExpr expr)
     {
-        return environment.getValue(expr.name);
+        return scope.getValue(expr.name);
     }
 
     #endregion
