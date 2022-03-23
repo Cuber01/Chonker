@@ -30,6 +30,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         } catch (Error error)
         {
             error.writeMessage();
+            hadError = true;
         }
     }
     
@@ -241,8 +242,6 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     private void error(Token token, string message)
     {
-        hadError = true;
-        
         string where;
         
         if (token.type == TokenType.EOF)
