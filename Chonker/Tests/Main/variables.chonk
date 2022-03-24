@@ -1,5 +1,5 @@
 var number a = 1;
-var string b = "hello", number c = 2;
+var string b = "hello", bool c = true;
 
 b = "not hello";
 

@@ -74,7 +74,7 @@ public class Parser
     
     private Stmt varDeclaration() 
     {
-        Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW);
+        Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW, BOOL_KW);
         Token name = consumeError(IDENTIFIER, "Expect variable name");
 
         Expr initializer = null!;
@@ -86,11 +86,11 @@ public class Parser
         if (isMatchConsume(COMMA))
         {
             statements.Add(varDeclaration()); // WARNING: ADD STATEMENT IN LOOP
-            return new VariableStmt(name, tokenToType(type.type), initializer);
+            return new VariableStmt(name, tokenToType(type), initializer);
         }
 
         consumeError(SEMICOLON, "Expect ';' after variable declaration");
-        return new VariableStmt(name, tokenToType(type.type), initializer);
+        return new VariableStmt(name, tokenToType(type), initializer);
     }
     
     private Stmt statement()
@@ -325,13 +325,16 @@ public class Parser
 
     private Token previousToken() => tokens.ElementAt(currentIndex - 1);
 
-    private Type? tokenToType(TokenType type)
+    private Type? tokenToType(Token token)
     {
-        if (type is NULL) return null;
-        if (type is NUMBER_KW) return typeof(Double);
-        if (type is STRING_KW) return typeof(String);
-
-        throw new Error("a", "b", "c", 1);
+        return token.type switch
+        {
+            NULL => null,
+            NUMBER_KW => typeof(Double),
+            STRING_KW => typeof(String),
+            BOOL_KW => typeof(Boolean),
+            _ => throw new Error("Interpreter", "Unknown variable type " + token.type, token.lexeme, token.line)
+        };
     }
     
     

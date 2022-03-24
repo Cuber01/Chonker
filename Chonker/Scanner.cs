@@ -40,6 +40,7 @@ namespace Chonker
             { "break",       BREAK       },
             { "string",      STRING_KW   },
             { "number",      NUMBER_KW   },
+            { "bool",        BOOL_KW     },
         };
 
         private int start;
