@@ -98,6 +98,7 @@ public class Parser
         if (isMatchConsume(PRINT))      return print();
         if (isMatchConsume(IF))         return ifStatement();
         if (isMatchConsume(WHILE))      return whileStatement();
+        if (isMatchConsume(FOR))        return forStatement();
         if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
         
 
@@ -156,6 +157,69 @@ public class Parser
         Stmt body = statement();
 
         return new WhileStmt(condition, body);
+    }
+    
+    private Stmt forStatement() {
+        consumeError(LEFT_PAREN, "Expect '(' after 'for'");
+
+        // Initializer
+        Stmt? initializer;
+        if (isMatchConsume(SEMICOLON)) 
+        {
+            initializer = null;
+        } 
+        else if (isMatchConsume(VAR))
+        {
+            initializer = varDeclaration();
+        } 
+        else
+        {
+            initializer = expressionStatement();
+        }
+        
+        // Condition
+        Expr? condition = null;
+        if (currentToken().type != SEMICOLON)
+        {
+            condition = expression();
+        }
+        consumeError(SEMICOLON, "Expect ';' after loop condition");
+        
+        // Increment
+        Expr? increment = null;
+        if (currentToken().type != SEMICOLON)
+        {
+            increment = expression();
+        }
+        consumeError(RIGHT_PAREN, "Expect ')' after for clauses");
+        
+        // Body
+        Stmt body = statement();
+        
+        // Assembling the pieces
+        if (increment != null)
+        {
+            body = new BlockStmt(
+                new List<Stmt>
+                {
+                    body,
+                    // If there's an increment expression, we append it to the body so it gets executed after it
+                    new ExpressionStmt(increment)
+                });
+        }
+
+        // If there's no condition, we assume it as always true
+        condition ??= new LiteralExpr(true);
+        body = new WhileStmt(condition, body);
+        
+        
+        if (initializer != null)
+        {
+            // If there's an initializer, we append it to the start of the body so it runs before it
+            body = new BlockStmt( new List<Stmt> {initializer, body});
+        }
+
+        return body;
     }
     
     #endregion

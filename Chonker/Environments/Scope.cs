@@ -35,7 +35,7 @@ public class Scope
         throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
     }
 
-    public Type getType(Token name)
+    public Type? getType(Token name)
     {
         if (variables.ContainsKey(name.lexeme))
         {
