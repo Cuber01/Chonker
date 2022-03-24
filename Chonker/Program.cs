@@ -25,7 +25,12 @@ namespace Chonker
             {
                 Environment.Exit(1);
             }
-            
+
+            // foreach (var stmt in statements)
+            // {
+            //     Console.WriteLine(new AstPrinter().print(stmt));    
+            // }
+
             Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
             interpreter.interpret(statements);
 

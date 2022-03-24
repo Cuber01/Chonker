@@ -21,7 +21,6 @@ namespace Chonker
         
         private readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
         {
-            { "and",         AND         },
             { "class",       CLASS       },
             { "else",        ELSE        },
             { "false",       FALSE       },
@@ -29,7 +28,6 @@ namespace Chonker
             { "function",    FUNCTION    },
             { "if",          IF          },
             { "null",        NULL        },
-            { "or",          OR          },
             { "print",       PRINT       },
             { "return",      RETURN      },
             { "super",       SUPER       },
@@ -104,6 +102,28 @@ namespace Chonker
                 case '>':
                     addToken(match('=') ? GREATER_EQUAL : GREATER);
                     break;
+                case '&':
+                    if (match('&'))
+                    {
+                        addToken(AND);
+                    }
+                    else
+                    {
+                        throw new Error("Scanner", "Another '&' expected after single '&'", "", line);
+                    }
+                    break;
+                
+                case '|':
+                    if (match('|'))
+                    {
+                        addToken(OR);
+                    }
+                    else
+                    {
+                        throw new Error("Scanner", "Another '|' expected after single '|'", "", line);
+                    }
+                    break;
+
                 
                 case '"': handleString(); break;
                 

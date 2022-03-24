@@ -12,6 +12,8 @@ public abstract class Stmt
         TResult visitExpressionStmt(ExpressionStmt stmt);
         TResult visitVariableStmt(VariableStmt stmt);
         TResult visitBlockStmt(BlockStmt stmt);
+        TResult visitIfStmt(IfStmt stmt);
+        TResult visitWhileStmt(WhileStmt stmt);
     }
 }
 
@@ -59,6 +61,43 @@ public class ExpressionStmt : Stmt
 
     public readonly Expr expression;
 }
+
+public class IfStmt : Stmt
+{
+    public IfStmt(Expr condition, Stmt thenBranch, Stmt? elseBranch)
+    {
+        this.condition = condition;
+        this.thenBranch = thenBranch;
+        this.elseBranch = elseBranch;
+    }
+
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitIfStmt(this);
+    }
+
+    public readonly Expr condition;
+    public readonly Stmt thenBranch;
+    public readonly Stmt? elseBranch;
+}
+
+public class WhileStmt : Stmt
+{
+    public WhileStmt(Expr condition, Stmt body)
+    {
+        this.condition = condition;
+        this.body = body;
+    }
+
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitWhileStmt(this);
+    }
+
+    public readonly Expr condition;
+    public readonly Stmt body;
+}
+
 
 public class VariableStmt : Stmt
 {

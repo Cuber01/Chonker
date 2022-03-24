@@ -95,8 +95,10 @@ public class Parser
     
     private Stmt statement()
     {
-        if (isMatchConsume(PRINT)) return print();
+        if (isMatchConsume(PRINT))      return print();
+        if (isMatchConsume(IF))         return ifStatement();
         if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
+        
 
         return expressionStatement();
     }
@@ -127,6 +129,23 @@ public class Parser
         consumeError(SEMICOLON, "Expect ';' after value");
         return new PrintStmt(value);
     }
+
+    private Stmt ifStatement()
+    {
+        consumeError(LEFT_PAREN, "Expect '(' after 'if'");
+        Expr condition = expression();
+        consumeError(RIGHT_PAREN, "Expect ')' after if condition"); 
+
+        Stmt thenBranch = statement();
+        
+        Stmt? elseBranch = null;
+        if (isMatchConsume(ELSE))
+        {
+            elseBranch = statement();
+        }
+
+        return new IfStmt(condition, thenBranch, elseBranch);
+    }
     
     #endregion
     
@@ -139,7 +158,7 @@ public class Parser
 
     private Expr assignment()
     {
-        Expr expr = equality();
+        Expr expr = or();
 
         if (isMatchConsume(EQUAL))
         {
@@ -153,6 +172,34 @@ public class Parser
             }
 
             error(equals, "Invalid assignment target."); 
+        }
+
+        return expr;
+    }
+
+    private Expr or()
+    {
+        Expr expr = and();
+
+        while (isMatchConsume(OR)) 
+        {
+            Token operant = previousToken();
+            Expr right = and();
+            expr = new LogicalExpr(expr, operant, right);
+        }
+
+        return expr;
+    }
+    
+    private Expr and() 
+    {
+        Expr expr = equality();
+
+        while (isMatchConsume(AND))
+        {
+            Token operant = previousToken();
+            Expr right = equality();
+            expr = new LogicalExpr(expr, operant, right);
         }
 
         return expr;

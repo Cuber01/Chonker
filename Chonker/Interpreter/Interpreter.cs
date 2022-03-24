@@ -106,6 +106,25 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         scope.define(stmt.name, value);
         return null;
     }
+    
+    public object? visitIfStmt(IfStmt stmt)
+    {
+        if (isTruthy(evaluate(stmt.condition))) 
+        {
+            execute(stmt.thenBranch);
+        } 
+        else if (stmt.elseBranch != null)
+        {
+            execute(stmt.elseBranch);
+        }
+        
+        return null;
+    }
+
+    public object? visitWhileStmt(WhileStmt stmt)
+    {
+        throw new NotImplementedException();
+    }
 
     #endregion
 
@@ -219,6 +238,21 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     public object visitVariableExpr(VariableExpr expr)
     {
         return scope.getValue(expr.name);
+    }
+    
+    public object visitLogicalExpr(LogicalExpr expr)
+    {
+        object left = evaluate(expr.left);
+
+        if (expr.operant.type == TokenType.OR)
+        {
+            if (isTruthy(left)) return left;
+        } else 
+        {
+            if (!isTruthy(left)) return left;
+        }
+
+        return evaluate(expr.right);
     }
 
     #endregion

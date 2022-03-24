@@ -41,6 +41,16 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return "";
     }
 
+    public string visitIfStmt(IfStmt stmt)
+    {
+        return build("if", stmt.condition);
+    }
+
+    public string visitWhileStmt(WhileStmt stmt)
+    {
+        return build("while", stmt.condition);
+    }
+
     #endregion
 
     #region Expressions
@@ -79,7 +89,12 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
     {
         return build(expr.name.lexeme); 
     }
-    
+
+    public string? visitLogicalExpr(LogicalExpr expr)
+    {
+        return build(expr.operant.lexeme, expr.left, expr.right);
+    }
+
     #endregion
     
     
