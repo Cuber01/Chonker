@@ -41,11 +41,14 @@ public class Scope
         {
             return variables[name.lexeme]!.GetType();
         }
+
+        if (enclosing != null) return enclosing.getType(name);
         
         throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
     }
     
-    public void assign(Token name, Object value) {
+    public void assign(Token name, Object value)
+    {
         
         if (variables.ContainsKey(name.lexeme))
         {
