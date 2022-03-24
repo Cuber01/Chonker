@@ -123,7 +123,12 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     public object? visitWhileStmt(WhileStmt stmt)
     {
-        throw new NotImplementedException();
+        while (isTruthy(evaluate(stmt.condition)))
+        {
+            execute(stmt.body);
+        }
+        
+        return null;
     }
 
     #endregion

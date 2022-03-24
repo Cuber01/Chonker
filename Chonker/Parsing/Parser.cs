@@ -97,6 +97,7 @@ public class Parser
     {
         if (isMatchConsume(PRINT))      return print();
         if (isMatchConsume(IF))         return ifStatement();
+        if (isMatchConsume(WHILE))      return whileStatement();
         if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
         
 
@@ -145,6 +146,16 @@ public class Parser
         }
 
         return new IfStmt(condition, thenBranch, elseBranch);
+    }
+    
+    private Stmt whileStatement() 
+    {
+        consumeError(LEFT_PAREN, "Expect '(' after 'while'.");
+        Expr condition = expression();
+        consumeError(RIGHT_PAREN, "Expect ')' after condition.");
+        Stmt body = statement();
+
+        return new WhileStmt(condition, body);
     }
     
     #endregion
