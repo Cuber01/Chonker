@@ -1,4 +1,4 @@
-namespace FakeOS.Tools
+namespace Chonker.Tools
 {
     public static class FileReader
     {
