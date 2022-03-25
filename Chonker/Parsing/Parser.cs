@@ -77,20 +77,25 @@ public class Parser
         Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW, BOOL_KW);
         Token name = consumeError(IDENTIFIER, "Expect variable name");
 
+        // TODO if initializer is null impplement a default value depending on type
         Expr initializer = null!;
         if (isMatchConsume(EQUAL)) 
         {
             initializer = expression();
         }
+        else
+        {
+            initializer = new LiteralExpr(defaultInitializer(type.type));
+        }
 
         if (isMatchConsume(COMMA))
         {
             statements.Add(varDeclaration()); // WARNING: ADD STATEMENT IN LOOP
-            return new VariableStmt(name, tokenToType(type), initializer);
+            return new VariableStmt(name, tokenToType(type)!, initializer);
         }
 
         consumeError(SEMICOLON, "Expect ';' after variable declaration");
-        return new VariableStmt(name, tokenToType(type), initializer);
+        return new VariableStmt(name, tokenToType(type)!, initializer);
     }
     
     private Stmt statement()
@@ -447,6 +452,8 @@ public class Parser
 
     private Token previousToken() => tokens.ElementAt(currentIndex - 1);
 
+    #region Variable Utils
+
     private Type? tokenToType(Token token)
     {
         return token.type switch
@@ -458,8 +465,21 @@ public class Parser
             _ => throw new Error("Interpreter", "Unknown variable type " + token.type, token.lexeme, token.line)
         };
     }
+
+    private object defaultInitializer(TokenType type)
+    {
+        switch (type)
+        {
+            case NUMBER_KW: return 0.0;
+            case STRING_KW: return "";
+            case BOOL_KW:   return false;
+            
+            default: throw new Error("Internal", "Unknown type " + type, "", -1);
+        }
+    }
     
-    
+    #endregion
+
     #endregion
 
     #region Error

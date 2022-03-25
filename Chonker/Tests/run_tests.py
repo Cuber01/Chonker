@@ -112,7 +112,7 @@ def submit_result(file, execution_time, success):
 
 def print_score():
 
-    if tests_passed > (tests_total / 2):
+    if tests_passed >= tests_total:
         print(ansii_success)
     else:
         print(ansii_failure)

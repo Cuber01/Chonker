@@ -103,7 +103,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             return null;
         }
 
-        scope.define(stmt.name, value);
+        scope.define(stmt.name, stmt.type, value);
         return null;
     }
     
@@ -228,7 +228,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         object value = evaluate(expr.value);
         
-        Type varType = scope.getType(expr.name);
+        Type varType = scope.getType(expr.name)!;
         if ( !(value.GetType() == varType) )
         {
             error(expr.name, $"Cannot convert type {varType} to {value.GetType()}");

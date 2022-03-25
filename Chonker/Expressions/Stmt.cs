@@ -101,7 +101,7 @@ public class WhileStmt : Stmt
 
 public class VariableStmt : Stmt
 {
-    public VariableStmt(Token name, Type? type, Expr initializer)
+    public VariableStmt(Token name, Type type, Expr initializer)
     {
         this.initializer = initializer;
         this.name = name;
@@ -114,7 +114,7 @@ public class VariableStmt : Stmt
     }
 
     public readonly Token name;
-    public readonly Type? type;
+    public readonly Type type;
     
     public readonly Expr? initializer;
 }

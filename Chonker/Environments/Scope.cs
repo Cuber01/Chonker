@@ -5,29 +5,30 @@ namespace Chonker.Environments;
 
 public class Scope
 {
-    private readonly Dictionary<string, object?> variables = new Dictionary<string, object?>();
+    private readonly Dictionary<string, (Type, object?)> variables = new Dictionary<string, (Type, object?)>();
     private readonly Scope? enclosing;
+
 
     public Scope(Scope? enclosing)
     {
         this.enclosing = enclosing;
     }
     
-    public void define(Token name, object? value)
+    public void define(Token name, Type type, object? value)
     {
         if (variables.Keys.Contains(name.lexeme))
         {
             throw new Error("Interpret","Tried to declare variable " + name.lexeme + ", but it already exists", "", name.line);
         }
-        
-        variables.Add(name.lexeme, value);
+
+        variables.Add(name.lexeme, (type, value));
     }
 
     public object getValue(Token name)
     {
         if (variables.ContainsKey(name.lexeme))
         {
-            return variables[name.lexeme]!;
+            return variables[name.lexeme].Item2!;
         }
         
         if (enclosing != null) return enclosing.getValue(name);
@@ -39,7 +40,7 @@ public class Scope
     {
         if (variables.ContainsKey(name.lexeme))
         {
-            return variables[name.lexeme]!.GetType();
+            return variables[name.lexeme].Item2!.GetType();
         }
 
         if (enclosing != null) return enclosing.getType(name);
@@ -52,7 +53,8 @@ public class Scope
         
         if (variables.ContainsKey(name.lexeme))
         {
-            variables[name.lexeme] = value;
+            // Type stays the same
+            variables[name.lexeme] = (variables[name.lexeme].Item1, value);
             return;
         }
         
