@@ -268,6 +268,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         if (obj is null) return false;
         if (obj is bool) return (bool)obj;
+        
         return true;
     }
 

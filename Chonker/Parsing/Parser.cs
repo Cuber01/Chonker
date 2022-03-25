@@ -104,6 +104,7 @@ public class Parser
         if (isMatchConsume(IF))         return ifStatement();
         if (isMatchConsume(WHILE))      return whileStatement();
         if (isMatchConsume(FOR))        return forStatement();
+        if (isMatchConsume(SWITCH))     return switchStatement();
         if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
         
 
@@ -164,7 +165,8 @@ public class Parser
         return new WhileStmt(condition, body);
     }
     
-    private Stmt forStatement() {
+    private Stmt forStatement() 
+    {
         consumeError(LEFT_PAREN, "Expect '(' after 'for'");
 
         // Initializer
@@ -225,6 +227,49 @@ public class Parser
         }
 
         return body;
+    }
+
+    private Stmt switchStatement()
+    {
+        bool foundDefault = false;
+        IfStmt? currentIf = null;
+
+        consumeError(LEFT_PAREN, "Expect '(' after 'switch'");
+        Expr expr = expression();
+        consumeError(RIGHT_PAREN, "Expect ')' after expression in switch");
+        
+        consumeError(LEFT_BRACE, "Expect '{' after switch()");
+
+        while (currentToken().type != RIGHT_BRACE && !isAtEnd())
+        {
+            Token caseOrDefault = consumeMultipleError("Expect either 'case' or 'default' in switch body", CASE, DEFAULT);
+
+            // Check if there are 2 default statements
+            if (caseOrDefault.type is DEFAULT)
+            {
+                if (!foundDefault)
+                {
+                    foundDefault = true;
+                }
+                else
+                    throw new Error("Parser", "One switch statement can't have more than one 'default' branch",
+                        caseOrDefault.lexeme, caseOrDefault.line);
+            }
+            
+            Expr condition = new BinaryExpr(expression(), 
+                                            new Token(EQUAL_EQUAL, "==", null, -1),
+                                            expr);
+            
+            consumeError(COLON, "Expect ':' after case/default condition");
+            
+            Stmt caseBody = statement();
+            currentIf = new IfStmt(condition, caseBody, currentIf);
+        }
+        
+        consumeError(RIGHT_BRACE, "Expect '}' after switch body");
+
+        // TODO return literally nothing if null
+        return currentIf!;
     }
     
     #endregion

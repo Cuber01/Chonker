@@ -39,6 +39,9 @@ namespace Chonker
             { "string",      STRING_KW   },
             { "number",      NUMBER_KW   },
             { "bool",        BOOL_KW     },
+            { "switch",      SWITCH      },
+            { "case",        CASE        },
+            { "default",     DEFAULT     },
         };
 
         private int start;
@@ -84,6 +87,7 @@ namespace Chonker
                 case '{': addToken(LEFT_BRACE); break;
                 case '}': addToken(RIGHT_BRACE); break;
                 case ',': addToken(COMMA); break;
+                case ':': addToken(COLON); break;
                 case '.': addToken(DOT); break;
                 case '-': addToken(MINUS); break;
                 case '+': addToken(PLUS); break;
