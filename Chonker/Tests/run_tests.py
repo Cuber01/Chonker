@@ -51,7 +51,7 @@ def run_good_tests():
             submit_result(Path(test).stem, execution_time, False)
         else:
             for output in outputs:
-                if Path(output).stem in test:
+                if Path(output).stem == Path(test).stem:
                     f = open(output, "r")
                     contents = f.read()
 
