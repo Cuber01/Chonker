@@ -1,0 +1,6 @@
+function void betterPrint(string text)
+{
+  print text;
+}
+
+betterPrint("Hello World but Better", "Very Evil Argument"); 

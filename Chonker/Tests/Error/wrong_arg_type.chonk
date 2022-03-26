@@ -1,0 +1,6 @@
+function void numberPrint(number nmb)
+{
+  print nmb;
+}
+
+numberPrint("Hello World but Better"); 
