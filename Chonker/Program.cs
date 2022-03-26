@@ -50,6 +50,8 @@ namespace Chonker
                 Environment.Exit(1);
             }
 
+            Console.WriteLine(typeof(void).Name);
+            
             Environment.Exit(0);
 
         }
