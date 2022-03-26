@@ -1,5 +1,6 @@
+using System.Xml;
 using Chonker.Environments;
-using Chonker.Expressions;
+using Chonker.Leaves;
 
 namespace Chonker.Functions;
 
@@ -12,7 +13,7 @@ public class Function : Callable
         this.declaration = declaration;
     }
 
-    public object call(Interpreter.Interpreter interpreter, List<object> arguments)
+    public object? call(Interpreter.Interpreter interpreter, List<object> arguments)
     {
         Scope scope = new Scope(interpreter.globals);
         
@@ -22,9 +23,25 @@ public class Function : Callable
             arguments.ElementAt(i).GetType(), arguments.ElementAt(i));
         }
 
-        interpreter.executeBlock(declaration.body, scope);
-        
-        return null!;
+        try
+        {
+            interpreter.executeBlock(declaration.body, scope);
+        } catch (Return returnValue)
+        {
+            if (returnValue.isEmpty) return new Empty();
+            if (returnValue.value is null) return null;
+            
+            if (returnValue.value.GetType() != declaration.returnType)
+            {
+                throw new Error("Interpreter",
+                    "Expected return type " + declaration.returnType + " but got " + returnValue.value!.GetType(),
+                    "return", declaration.name.line);
+            }
+                
+            return returnValue.value;
+        }
+
+        return null;
     }
     
     public String toString()

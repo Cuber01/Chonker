@@ -1,6 +1,6 @@
 using Chonker.Environments;
-using Chonker.Expressions;
 using Chonker.Functions;
+using Chonker.Leaves;
 using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
 
@@ -148,6 +148,22 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         
         return null;
     }
+
+    public object? visitReturnStmt(ReturnStmt stmt)
+    {
+        object? value = null;
+        if (stmt.value == null)
+        {
+            throw new Return(value, true);            
+        }
+        else
+        {
+            value = evaluate(stmt.value);
+        }
+        
+        throw new Return(value, false);
+    }
+
 
     #endregion
 

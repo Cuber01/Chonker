@@ -1,6 +1,6 @@
 function void hmmTodayIWillAccessVoid()
 {
-    return null;
+    return;
 }
 
 print hmmTodayIWillAccessVoid();

@@ -1,5 +1,5 @@
 using System.Text;
-using Chonker.Expressions;
+using Chonker.Leaves;
 
 namespace Chonker.Tools;
 
@@ -56,6 +56,11 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return build("function", new LiteralExpr(stmt.name));
     }
 
+    public string? visitReturnStmt(ReturnStmt stmt)
+    {
+        return build("return", stmt.value);
+    }
+
     #endregion
 
     #region Expressions
@@ -108,7 +113,7 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
     #endregion
     
     
-    private string build(string type, params Expr[] expressions)
+    private string build(string type, params Expr?[] expressions)
     {
         StringBuilder builder = new StringBuilder();
 

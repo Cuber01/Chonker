@@ -10,7 +10,7 @@ See Tokens/Token.cs
  
 */
 
-namespace Chonker
+namespace Chonker.Scanning
 {
     public class Scanner
     {

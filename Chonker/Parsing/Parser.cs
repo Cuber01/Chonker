@@ -1,4 +1,4 @@
-using Chonker.Expressions;
+using Chonker.Leaves;
 using Chonker.Tokens;
 
 using static Chonker.Tokens.TokenType;
@@ -56,7 +56,7 @@ public class Parser
     {
         try 
         {
-            if (isMatchConsume(VAR))
+            if (isMatch(VAR))
             {
                 return varDeclaration();
             }
@@ -79,7 +79,7 @@ public class Parser
 
         // TODO if initializer is null impplement a default value depending on type
         Expr initializer = null!;
-        if (isMatchConsume(EQUAL)) 
+        if (isMatch(EQUAL)) 
         {
             initializer = expression();
         }
@@ -88,7 +88,7 @@ public class Parser
             initializer = new LiteralExpr(defaultInitializer(type.type));
         }
 
-        if (isMatchConsume(COMMA))
+        if (isMatch(COMMA))
         {
             statements.Add(varDeclaration()); // WARNING: ADD STATEMENT IN LOOP
             return new VariableStmt(name, tokenToType(type)!, initializer);
@@ -100,13 +100,14 @@ public class Parser
     
     private Stmt statement()
     {
-        if (isMatchConsume(PRINT))      return print();
-        if (isMatchConsume(IF))         return ifStatement();
-        if (isMatchConsume(WHILE))      return whileStatement();
-        if (isMatchConsume(FOR))        return forStatement();
-        if (isMatchConsume(SWITCH))     return switchStatement();
-        if (isMatchConsume(FUNCTION))   return function("function");
-        if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
+        if (isMatch(PRINT))      return print();
+        if (isMatch(IF))         return ifStatement();
+        if (isMatch(WHILE))      return whileStatement();
+        if (isMatch(FOR))        return forStatement();
+        if (isMatch(SWITCH))     return switchStatement();
+        if (isMatch(FUNCTION))   return function("function");
+        if (isMatch(RETURN))     return returnStatement();
+        if (isMatch(LEFT_BRACE)) return new BlockStmt(block());
         
 
         return expressionStatement();
@@ -148,7 +149,7 @@ public class Parser
         Stmt thenBranch = statement();
         
         Stmt? elseBranch = null;
-        if (isMatchConsume(ELSE))
+        if (isMatch(ELSE))
         {
             elseBranch = statement();
         }
@@ -172,11 +173,11 @@ public class Parser
 
         // Initializer
         Stmt? initializer;
-        if (isMatchConsume(SEMICOLON)) 
+        if (isMatch(SEMICOLON)) 
         {
             initializer = null;
         } 
-        else if (isMatchConsume(VAR))
+        else if (isMatch(VAR))
         {
             initializer = varDeclaration();
         } 
@@ -313,7 +314,7 @@ public class Parser
                 Token paramName = consumeError(IDENTIFIER, "Expect parameter name");
                 
                 parameters.Add((paramName, paramType));
-            } while (isMatchConsume(COMMA));
+            } while (isMatch(COMMA));
         }
         
         consumeError(RIGHT_PAREN, "Expect ')' after parameters");
@@ -323,6 +324,21 @@ public class Parser
         
         return new FunctionStmt(name, returnType, parameters, body);
     }
+    
+    private Stmt returnStatement()
+    {
+        Token keyword = previousToken();
+        Expr? value = null;
+        
+        if (currentToken().type != SEMICOLON)
+        {
+            value = expression();
+        }
+
+        consumeError(SEMICOLON, "Expect ';' after return value");
+        return new ReturnStmt(keyword, value);
+    }
+
     
     #endregion
     
@@ -337,7 +353,7 @@ public class Parser
     {
         Expr expr = or();
 
-        if (isMatchConsume(EQUAL))
+        if (isMatch(EQUAL))
         {
             Token equals = previousToken();
             Expr value = assignment();
@@ -358,7 +374,7 @@ public class Parser
     {
         Expr expr = and();
 
-        while (isMatchConsume(OR)) 
+        while (isMatch(OR)) 
         {
             Token operant = previousToken();
             Expr right = and();
@@ -372,7 +388,7 @@ public class Parser
     {
         Expr expr = equality();
 
-        while (isMatchConsume(AND))
+        while (isMatch(AND))
         {
             Token operant = previousToken();
             Expr right = equality();
@@ -386,7 +402,7 @@ public class Parser
     {
         Expr expr = comparison();
 
-        while (isMatchConsume(EQUAL_EQUAL, BANG_EQUAL))
+        while (isMatch(EQUAL_EQUAL, BANG_EQUAL))
         {
             Token operant = previousToken();
             Expr right = comparison();
@@ -400,7 +416,7 @@ public class Parser
     {
         Expr expr = additionSubtraction();
             
-        while (isMatchConsume(LESS, GREATER, GREATER_EQUAL, LESS_EQUAL))
+        while (isMatch(LESS, GREATER, GREATER_EQUAL, LESS_EQUAL))
         {
             Token operant = previousToken();
             Expr right = additionSubtraction();
@@ -414,7 +430,7 @@ public class Parser
     {
         Expr expr = multiplicationDivision();
             
-        while (isMatchConsume(MINUS, PLUS))
+        while (isMatch(MINUS, PLUS))
         {
             Token operant = previousToken();
             Expr right = multiplicationDivision();
@@ -428,7 +444,7 @@ public class Parser
     {
         Expr expr = unary();
             
-        while (isMatchConsume(STAR, SLASH))
+        while (isMatch(STAR, SLASH))
         {
             Token operant = previousToken();
             Expr right = unary();
@@ -440,7 +456,7 @@ public class Parser
     
     private Expr unary()
     {
-        if (isMatchConsume(BANG, MINUS))
+        if (isMatch(BANG, MINUS))
         {
             Token operant = previousToken();
             Expr right = primary();
@@ -456,7 +472,7 @@ public class Parser
 
         while (true)
         { 
-            if (isMatchConsume(LEFT_PAREN))
+            if (isMatch(LEFT_PAREN))
             {
                 expr = finishCall(expr);
             } else
@@ -477,7 +493,7 @@ public class Parser
             do 
             {
                 arguments.Add(expression());
-            } while (isMatchConsume(COMMA));
+            } while (isMatch(COMMA));
         }
 
         Token paren = consumeError(RIGHT_PAREN, "Expect ')' after arguments");
@@ -521,7 +537,7 @@ public class Parser
 
     #region Util
 
-    private bool isMatchConsume(params TokenType[] types)
+    private bool isMatch(params TokenType[] types)
     {
         foreach (var type in types)
         {

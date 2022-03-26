@@ -1,6 +1,6 @@
 using Chonker.Tokens;
 
-namespace Chonker.Expressions;
+namespace Chonker.Leaves;
 
 public abstract class Stmt
 {
@@ -15,6 +15,7 @@ public abstract class Stmt
         TResult visitIfStmt(IfStmt stmt);
         TResult visitWhileStmt(WhileStmt stmt);
         TResult visitFunctionStmt(FunctionStmt stmt);
+        TResult visitReturnStmt(ReturnStmt stmt);
     }
 }
 
@@ -139,6 +140,24 @@ public class FunctionStmt : Stmt
     public readonly List<(Token, Type)> parameters;
     public readonly Type returnType;
     public readonly List<Stmt> body;
+}
+
+
+public class ReturnStmt : Stmt
+{
+    public ReturnStmt(Token keyword, Expr? value)
+    {
+        this.keyword = keyword;
+        this.value = value;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitReturnStmt(this);
+    }
+    
+    public readonly Expr? value;
+    public readonly Token keyword;
 }
 
 
