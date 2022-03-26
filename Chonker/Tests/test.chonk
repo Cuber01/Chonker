@@ -1,1 +1,6 @@
-print clock();
+function sayHi(first, last)
+{
+  print "Hi, " + first + " " + last + "!";
+}
+
+sayHi("Dear", "Reader");

@@ -105,6 +105,7 @@ public class Parser
         if (isMatchConsume(WHILE))      return whileStatement();
         if (isMatchConsume(FOR))        return forStatement();
         if (isMatchConsume(SWITCH))     return switchStatement();
+        if (isMatchConsume(FUNCTION))   return function("function");
         if (isMatchConsume(LEFT_BRACE)) return new BlockStmt(block());
         
 
@@ -296,7 +297,26 @@ public class Parser
         return currentIf!;
     }
 
-
+    private FunctionStmt function(string kind)
+    {
+        Token name = consumeError(IDENTIFIER, "Expect " + kind + " name");
+        consumeError(LEFT_PAREN, "Expect '(' after " + kind + " name");
+        
+        List<Token> parameters = new List<Token>();
+        if (currentToken().type != RIGHT_PAREN)
+        {
+            do {
+                parameters.Add(consumeError(IDENTIFIER, "Expect parameter name."));
+            } while (isMatchConsume(COMMA));
+        }
+        
+        consumeError(RIGHT_PAREN, "Expect ')' after parameters");
+        
+        consumeError(LEFT_BRACE, "Expect '{' before " + kind + " body.");
+        List<Stmt> body = block();
+        
+        return new FunctionStmt(name, parameters, body);
+    }
     
     #endregion
     

@@ -17,13 +17,15 @@ We basically visit and evaluate every statement and expression into values/liter
 
 public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
-    private static readonly Scope globals = new Scope(null);
-    private Scope scope = globals;
+    public readonly Scope globals = new Scope(null);
+    private Scope scope;
     
     public bool hadError;
 
     public Interpreter()
     {
+        scope = globals;
+        
         globals.define("clock", -1, typeof(Func<>) , new NativeFunctions.Clock());
     }
     
@@ -52,8 +54,8 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     private void execute(Stmt stmt) {
         stmt.accept(this);
     }
-    
-    void executeBlock(List<Stmt> statements, Scope newEnv)
+
+    public void executeBlock(List<Stmt> statements, Scope newEnv)
     {
         Scope previous = this.scope;
         
@@ -135,6 +137,14 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         {
             execute(stmt.body);
         }
+        
+        return null;
+    }
+
+    public object? visitFunctionStmt(FunctionStmt stmt)
+    {
+        Function function = new Function(stmt);
+        scope.define(stmt.name.lexeme, stmt.name.line, function.GetType(), function);
         
         return null;
     }

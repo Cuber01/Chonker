@@ -51,6 +51,11 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return build("while", stmt.condition);
     }
 
+    public string? visitFunctionStmt(FunctionStmt stmt)
+    {
+        return build("function", new LiteralExpr(stmt.name));
+    }
+
     #endregion
 
     #region Expressions

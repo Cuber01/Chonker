@@ -14,6 +14,7 @@ public abstract class Stmt
         TResult visitBlockStmt(BlockStmt stmt);
         TResult visitIfStmt(IfStmt stmt);
         TResult visitWhileStmt(WhileStmt stmt);
+        TResult visitFunctionStmt(FunctionStmt stmt);
     }
 }
 
@@ -118,3 +119,24 @@ public class VariableStmt : Stmt
     
     public readonly Expr? initializer;
 }
+
+public class FunctionStmt : Stmt
+{
+    public FunctionStmt(Token name, List<Token> parameters, List<Stmt> body)
+    {
+        this.name = name;
+        this.parameters = parameters;
+        this.body = body;
+    }
+
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitFunctionStmt(this);
+    }
+
+    public readonly Token name;
+    public readonly List<Token> parameters;
+    public readonly List<Stmt> body;
+}
+
+
