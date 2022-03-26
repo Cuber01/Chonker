@@ -110,6 +110,11 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return build("call", expr.callee);
     }
 
+    public string? visitTernaryExpr(TernaryExpr expr)
+    {
+        return build("?", expr.condition, expr.thenBranch, expr.thenBranch);
+    }
+
     #endregion
     
     

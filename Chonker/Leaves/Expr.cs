@@ -28,6 +28,7 @@ public abstract class Expr
         TResult visitVariableExpr(VariableExpr expr);
         TResult visitLogicalExpr(LogicalExpr expr);
         TResult visitCallExpr(CallExpr expr);
+        TResult visitTernaryExpr(TernaryExpr expr);
     }
 }
 
@@ -104,6 +105,25 @@ public class LogicalExpr : Expr
     public readonly Expr left;
     public readonly Token operant;
     public readonly Expr right;
+}
+
+public class TernaryExpr : Expr
+{
+    public TernaryExpr(Expr condition, Expr thenBranch, Expr elseBranch)
+    {
+        this.condition = condition;
+        this.thenBranch = thenBranch;
+        this.elseBranch = elseBranch;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitTernaryExpr(this);
+    }
+
+    public readonly Expr condition;
+    public readonly Expr thenBranch;
+    public readonly Expr elseBranch;
 }
 
 public class UnaryExpr : Expr

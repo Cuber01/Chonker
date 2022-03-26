@@ -370,7 +370,7 @@ public class Parser
 
     private Expr assignment()
     {
-        Expr expr = or();
+        Expr expr = ternary();
 
         if (isMatch(EQUAL))
         {
@@ -384,6 +384,21 @@ public class Parser
             }
 
             error(equals, "Invalid assignment target."); 
+        }
+
+        return expr;
+    }
+
+    private Expr ternary()
+    {
+        Expr expr = or();
+
+        if (isMatch(QUESTION_MARK))
+        {
+            Expr thenBranch = or();
+            consumeError(COLON, "Expect ':' after first branch of ternary operator");
+            Expr elseBranch = or();
+            expr = new TernaryExpr(expr, thenBranch, elseBranch);
         }
 
         return expr;

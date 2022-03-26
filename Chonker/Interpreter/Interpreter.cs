@@ -342,6 +342,19 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         return function.call(this, arguments)!;
     }
 
+    public object visitTernaryExpr(TernaryExpr expr)
+    {
+        bool condition = isTruthy(evaluate(expr.condition));
+
+        if (condition)
+        {
+            return evaluate(expr.thenBranch);
+        }
+        else
+        {
+            return evaluate(expr.elseBranch);
+        }
+    }
 
     #endregion
 
