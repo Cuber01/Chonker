@@ -282,11 +282,13 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         object callee = evaluate(expr.callee);
         
+        // Check if what we call is callable/function
         if (callee is not Callable)
         {
             throw new Error("Interpreter", "Can only call functions and classes",expr.paren.lexeme, expr.paren.line);
         }
 
+        // Evaluate arguments
         List<object> arguments = new List<object>();
         
         foreach (Expr argument in expr.arguments)
@@ -295,12 +297,30 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         }
 
         Callable function = (Callable)callee;
-        
+
+        // Check if the number of arguments is right
         if (arguments.Count != function.arity())
         {
             throw new Error("Interpreter", "Expected " + function.arity() + " arguments but got " + arguments.Count, expr.paren.lexeme, expr.paren.line);
         }
         
+        // Check if the type of arguments is right
+        List<Type>? paramTypes = function.getParameterTypes();
+        if (paramTypes != null)
+        {
+            for (var i = 0; i < arguments.Count; i++)
+            {
+                Type got = arguments[i].GetType();
+                Type expected = paramTypes[i];
+            
+                if (got != expected)
+                {
+                    throw new Error("Interpreter", "Expected argument of type " + expected + " but got " + got,
+                        expr.paren.lexeme, expr.paren.line);
+                }
+            }    
+        }
+
         return function.call(this, arguments);
     }
 

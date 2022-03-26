@@ -18,6 +18,11 @@ namespace Chonker.Functions
             {
                 return "<native fn>";
             }
+
+            public List<Type>? getParameterTypes()
+            {
+                return null;
+            } 
         }
     }
 }

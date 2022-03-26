@@ -36,4 +36,18 @@ public class Function : Callable
     {
         return declaration.parameters.Count;
     }
+
+    public List<Type>? getParameterTypes()
+    {
+        if (declaration.parameters.Count == 0) return null;
+        
+        List<Type> rv = new List<Type>();
+
+        foreach (var param in declaration.parameters)
+        {
+            rv.Add(param.Item2);
+        }
+
+        return rv;
+    }
 }
