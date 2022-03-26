@@ -299,23 +299,29 @@ public class Parser
 
     private FunctionStmt function(string kind)
     {
+        Type returnType = tokenToType(consumeMultipleError("Expect return type", NUMBER_KW, STRING_KW, BOOL_KW))!;
+        
         Token name = consumeError(IDENTIFIER, "Expect " + kind + " name");
         consumeError(LEFT_PAREN, "Expect '(' after " + kind + " name");
         
-        List<Token> parameters = new List<Token>();
+        List<(Token, Type)> parameters = new List<(Token, Type)>();
         if (currentToken().type != RIGHT_PAREN)
         {
-            do {
-                parameters.Add(consumeError(IDENTIFIER, "Expect parameter name."));
+            do
+            {
+                Type paramType = tokenToType(consumeMultipleError("Expect parameter type", BOOL_KW, STRING_KW, NUMBER_KW))!;
+                Token paramName = consumeError(IDENTIFIER, "Expect parameter name");
+                
+                parameters.Add((paramName, paramType));
             } while (isMatchConsume(COMMA));
         }
         
         consumeError(RIGHT_PAREN, "Expect ')' after parameters");
         
-        consumeError(LEFT_BRACE, "Expect '{' before " + kind + " body.");
+        consumeError(LEFT_BRACE, "Expect '{' before " + kind + " body");
         List<Stmt> body = block();
         
-        return new FunctionStmt(name, parameters, body);
+        return new FunctionStmt(name, returnType, parameters, body);
     }
     
     #endregion
@@ -474,7 +480,7 @@ public class Parser
             } while (isMatchConsume(COMMA));
         }
 
-        Token paren = consumeError(RIGHT_PAREN, "Expect ')' after arguments.");
+        Token paren = consumeError(RIGHT_PAREN, "Expect ')' after arguments");
 
         return new CallExpr(callee, paren, arguments);
     }

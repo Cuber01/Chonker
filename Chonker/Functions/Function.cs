@@ -18,12 +18,13 @@ public class Function : Callable
         
         for (int i = 0; i < declaration.parameters.Count; i++)
         {
-            scope.define(declaration.parameters.ElementAt(i).lexeme, declaration.parameters.ElementAt(i).line,
+            scope.define(declaration.parameters.ElementAt(i).Item1.lexeme, declaration.parameters.ElementAt(i).Item1.line,
             arguments.ElementAt(i).GetType(), arguments.ElementAt(i));
         }
 
         interpreter.executeBlock(declaration.body, scope);
-        return null;
+        
+        return null!;
     }
     
     public String toString()

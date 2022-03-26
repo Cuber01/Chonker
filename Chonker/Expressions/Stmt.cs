@@ -122,11 +122,12 @@ public class VariableStmt : Stmt
 
 public class FunctionStmt : Stmt
 {
-    public FunctionStmt(Token name, List<Token> parameters, List<Stmt> body)
+    public FunctionStmt(Token name, Type returnType, List<(Token, Type)> parameters, List<Stmt> body)
     {
         this.name = name;
         this.parameters = parameters;
         this.body = body;
+        this.returnType = returnType;
     }
 
     public override TResult accept<TResult>(IVisitor<TResult> visitor)
@@ -135,7 +136,8 @@ public class FunctionStmt : Stmt
     }
 
     public readonly Token name;
-    public readonly List<Token> parameters;
+    public readonly List<(Token, Type)> parameters;
+    public readonly Type returnType;
     public readonly List<Stmt> body;
 }
 
