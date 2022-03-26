@@ -95,6 +95,11 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return build(expr.operant.lexeme, expr.left, expr.right);
     }
 
+    public string visitCallExpr(CallExpr expr)
+    {
+        return build("call", expr.callee);
+    }
+
     #endregion
     
     

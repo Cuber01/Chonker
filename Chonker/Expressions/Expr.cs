@@ -27,6 +27,7 @@ public abstract class Expr
         TResult visitAssignExpr(AssignExpr expr);
         TResult visitVariableExpr(VariableExpr expr);
         TResult visitLogicalExpr(LogicalExpr expr);
+        TResult visitCallExpr(CallExpr expr);
     }
 }
 
@@ -51,6 +52,25 @@ public class BinaryExpr : Expr
     
 }
 
+public class CallExpr : Expr
+{
+    public CallExpr(Expr callee, Token paren, List<Expr> arguments)
+    {
+        this.callee = callee;
+        this.paren = paren;
+        this.arguments = arguments;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitCallExpr(this);
+    }
+    
+    public readonly Expr callee;
+    public readonly Token paren;
+    public readonly List<Expr> arguments;
+    
+}
 
 public class GroupedExpr : Expr
 {

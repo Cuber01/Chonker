@@ -23,6 +23,16 @@ public class Scope
 
         variables.Add(name.lexeme, (type, value));
     }
+    
+    public void define(string name, int line, Type type, object? value)
+    {
+        if (variables.Keys.Contains(name))
+        {
+            throw new Error("Interpret","Tried to declare function " + name + ", but it already exists", "", line);
+        }
+
+        variables.Add(name, (type, value));
+    }
 
     public object getValue(Token name)
     {

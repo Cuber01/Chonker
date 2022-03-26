@@ -1,0 +1,20 @@
+switch(0)
+{
+    
+    case 1:
+    {
+        print "no gaming >:(";
+    }
+
+    case 2:
+    {
+        print "no gaming >:(";
+    }
+
+    default:
+    {
+        print "gaming";
+    }
+
+}
+

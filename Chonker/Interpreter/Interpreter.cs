@@ -1,5 +1,6 @@
 using Chonker.Environments;
 using Chonker.Expressions;
+using Chonker.Functions;
 using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
 
@@ -16,8 +17,15 @@ We basically visit and evaluate every statement and expression into values/liter
 
 public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 {
-    private Scope scope = new Scope(null);
+    private static readonly Scope globals = new Scope(null);
+    private Scope scope = globals;
+    
     public bool hadError;
+
+    public Interpreter()
+    {
+        globals.define("clock", -1, typeof(Func<>) , new NativeFunctions.Clock());
+    }
     
     public void interpret(List<Stmt> statements)
     { 
@@ -95,7 +103,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         {
             value = evaluate(stmt.initializer);
         }
-        
+
         if ( !(value is null || value.GetType() == stmt.type) )
         {
             error(stmt.name, $"Cannot convert type {stmt.type} to {value.GetType()}");
@@ -259,6 +267,33 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
         return evaluate(expr.right);
     }
+    
+    public object visitCallExpr(CallExpr expr)
+    {
+        object callee = evaluate(expr.callee);
+        
+        if (callee is not Callable)
+        {
+            throw new Error("Interpreter", "Can only call functions and classes",expr.paren.lexeme, expr.paren.line);
+        }
+
+        List<object> arguments = new List<object>();
+        
+        foreach (Expr argument in expr.arguments)
+        { 
+            arguments.Add(evaluate(argument));
+        }
+
+        Callable function = (Callable)callee;
+        
+        if (arguments.Count != function.arity())
+        {
+            throw new Error("Interpreter", "Expected " + function.arity() + " arguments but got " + arguments.Count, expr.paren.lexeme, expr.paren.line);
+        }
+        
+        return function.call(this, arguments);
+    }
+
 
     #endregion
 

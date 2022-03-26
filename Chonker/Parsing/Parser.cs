@@ -231,8 +231,9 @@ public class Parser
 
     private Stmt switchStatement()
     {
-        bool foundDefault = false;
         IfStmt? currentIf = null;
+        Stmt? defaultBranch = null;
+        List<IfStmt> cases = new List<IfStmt>();
 
         consumeError(LEFT_PAREN, "Expect '(' after 'switch'");
         Expr expr = expression();
@@ -244,33 +245,58 @@ public class Parser
         {
             Token caseOrDefault = consumeMultipleError("Expect either 'case' or 'default' in switch body", CASE, DEFAULT);
 
-            // Check if there are 2 default statements
-            if (caseOrDefault.type is DEFAULT)
+            // Case
+            if (caseOrDefault.type is CASE)
             {
-                if (!foundDefault)
-                {
-                    foundDefault = true;
-                }
-                else
-                    throw new Error("Parser", "One switch statement can't have more than one 'default' branch",
-                        caseOrDefault.lexeme, caseOrDefault.line);
+                Expr condition = new BinaryExpr(expression(),
+                    new Token(EQUAL_EQUAL, "==", null, -1),
+                    expr);
+
+                consumeError(COLON, "Expect ':' after case/default condition");
+
+                Stmt caseBody = statement();
+                cases.Add(new IfStmt(condition, caseBody, currentIf));
             }
-            
-            Expr condition = new BinaryExpr(expression(), 
-                                            new Token(EQUAL_EQUAL, "==", null, -1),
-                                            expr);
-            
-            consumeError(COLON, "Expect ':' after case/default condition");
-            
-            Stmt caseBody = statement();
-            currentIf = new IfStmt(condition, caseBody, currentIf);
+            else // Default
+            {
+                // Check if there are 2 default statements
+                if (defaultBranch != null)
+                {
+                    throw new Error("Parser", "One switch statement can't have more than one 'default' branch", 
+                        caseOrDefault.lexeme, caseOrDefault.line);
+                }
+                
+                consumeError(COLON, "Expect ':' after case/default condition");
+                
+                defaultBranch = statement();
+            }
         }
         
         consumeError(RIGHT_BRACE, "Expect '}' after switch body");
 
+
+        for (var i = 0; i < cases.Count; i++)
+        {
+            
+            var _case = cases[i];
+            if (i == 0 && defaultBranch != null)
+            {
+                IfStmt def = new IfStmt(new LiteralExpr(false), null!, defaultBranch);
+
+                currentIf = new IfStmt(_case.condition, _case.thenBranch, def);
+            }
+            else
+            {
+                currentIf = _case;
+            }
+            
+        }
+
         // TODO return literally nothing if null
         return currentIf!;
     }
+
+
     
     #endregion
     
@@ -395,8 +421,44 @@ public class Parser
             return new UnaryExpr(operant, right);
         }
         
-        return primary();
+        return call();
     }
+    
+    private Expr call() 
+    {
+        Expr expr = primary();
+
+        while (true)
+        { 
+            if (isMatchConsume(LEFT_PAREN))
+            {
+                expr = finishCall(expr);
+            } else
+            {
+                break;
+            }
+        }
+
+        return expr;
+    }
+    
+    private Expr finishCall(Expr callee)
+    {
+        List<Expr> arguments = new List<Expr>();
+        
+        if (currentToken().type != RIGHT_PAREN)
+        {
+            do 
+            {
+                arguments.Add(expression());
+            } while (isMatchConsume(COMMA));
+        }
+
+        Token paren = consumeError(RIGHT_PAREN, "Expect ')' after arguments.");
+
+        return new CallExpr(callee, paren, arguments);
+    }
+
 
     private Expr primary()
     {
@@ -421,7 +483,6 @@ public class Parser
             }
         }
         
-
         // Retract from advancing.
         retract();
         
@@ -543,7 +604,7 @@ public class Parser
             where = $"at {token.lexeme}.";
         }
         
-        throw new Error("Interpreter", message, where, token.line);
+        throw new Error("Parser", message, where, token.line);
     }
     
     private void synchronize() 
