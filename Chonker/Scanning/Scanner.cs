@@ -42,6 +42,7 @@ namespace Chonker
             { "switch",      SWITCH      },
             { "case",        CASE        },
             { "default",     DEFAULT     },
+            { "void",        VOID        },
         };
 
         private int start;

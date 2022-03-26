@@ -1,6 +1,6 @@
-function number sayHi(string first, string last)
+function void sayHi(string first, string last)
 {
   print "Hi, " + first + " " + last + "!";
 }
 
-sayHi("Dear", "Reader");
+sayHi("Dear", "Reader"); 

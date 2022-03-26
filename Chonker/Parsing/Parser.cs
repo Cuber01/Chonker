@@ -299,7 +299,7 @@ public class Parser
 
     private FunctionStmt function(string kind)
     {
-        Type returnType = tokenToType(consumeMultipleError("Expect return type", NUMBER_KW, STRING_KW, BOOL_KW))!;
+        Type returnType = tokenToType(consumeMultipleError("Expect return type", NUMBER_KW, STRING_KW, BOOL_KW, VOID))!;
         
         Token name = consumeError(IDENTIFIER, "Expect " + kind + " name");
         consumeError(LEFT_PAREN, "Expect '(' after " + kind + " name");
@@ -594,6 +594,7 @@ public class Parser
             NUMBER_KW => typeof(Double),
             STRING_KW => typeof(String),
             BOOL_KW => typeof(Boolean),
+            VOID => typeof(void),
             _ => throw new Error("Interpreter", "Unknown variable type " + token.type, token.lexeme, token.line)
         };
     }
