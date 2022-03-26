@@ -28,16 +28,22 @@ public class Function : Callable
             interpreter.executeBlock(declaration.body, scope);
         } catch (Return returnValue)
         {
-            if (returnValue.isEmpty) return new Empty();
-            if (returnValue.value is null) return null;
+            // return nothing(+null) + fun void => empty
+            if (returnValue.isEmpty && declaration.returnType == typeof(void)) return new Empty();
+            // return null + fun something => null
+            if (returnValue.value is null && !returnValue.isEmpty) return null;
+            // return nothing + fun something => error
+            if(returnValue.value is null) throw new Error("Interpreter", "Expected return type " + declaration.returnType + " but got void", "return", declaration.name.line);
             
+            // return something + fun something else => error
             if (returnValue.value.GetType() != declaration.returnType)
             {
                 throw new Error("Interpreter",
-                    "Expected return type " + declaration.returnType + " but got " + returnValue.value!.GetType(),
+                    "Expected return type " + declaration.returnType + " but got " + returnValue.value.GetType(),
                     "return", declaration.name.line);
             }
                 
+            // return something + fun same something => something
             return returnValue.value;
         }
 

@@ -42,9 +42,10 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             error.writeMessage();
             hadError = true;
         }
+
     }
-    
-    private Object evaluate(Expr expr)
+
+    private object evaluate(Expr expr)
     {
         return expr.accept(this);
     }
@@ -149,7 +150,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         return null;
     }
 
-    public object? visitReturnStmt(ReturnStmt stmt)
+    public object visitReturnStmt(ReturnStmt stmt)
     {
         object? value = null;
         if (stmt.value == null)
@@ -337,7 +338,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             }    
         }
 
-        return function.call(this, arguments);
+        return function.call(this, arguments)!;
     }
 
 

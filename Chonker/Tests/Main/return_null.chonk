@@ -1,0 +1,6 @@
+function number getNull()
+{
+    return null;
+}
+
+print getNull();

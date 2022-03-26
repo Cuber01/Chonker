@@ -1,6 +1,6 @@
-function void hmmTodayIWillAccessVoid()
+function number one()
 {
-    return null;
+    return 1;
 }
 
-print hmmTodayIWillAccessVoid();
+print one();
