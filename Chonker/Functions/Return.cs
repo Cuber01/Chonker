@@ -4,11 +4,13 @@ public class Return : Exception
 {
     public readonly object? value;
     public readonly bool isEmpty;
+    public readonly int line;
 
-    public Return(object? value, bool isEmpty)
+    public Return(object? value, int line, bool isEmpty)
     { 
         this.value = value;
         this.isEmpty = isEmpty;
+        this.line = line;
     }
 }
 

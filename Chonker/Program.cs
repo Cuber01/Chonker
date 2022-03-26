@@ -1,4 +1,5 @@
-﻿using Chonker.Leaves;
+﻿using Chonker.Functions;
+using Chonker.Leaves;
 using Chonker.Parsing;
 using Chonker.Scanning;
 using Chonker.Tokens;
@@ -33,7 +34,16 @@ namespace Chonker
             // }
 
             Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
-            interpreter.interpret(statements);
+            try
+            {
+                interpreter.interpret(statements);
+            }
+            catch (Return ret)
+            {
+                Error e = new Error("Interpreter", "Unexpected return statement", "", ret.line);
+                e.writeMessage();
+            }
+
 
             if (interpreter.hadError)
             {

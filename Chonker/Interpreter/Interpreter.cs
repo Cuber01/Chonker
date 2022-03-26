@@ -155,14 +155,14 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         object? value = null;
         if (stmt.value == null)
         {
-            throw new Return(value, true);            
+            throw new Return(value, stmt.keyword.line, true);            
         }
         else
         {
             value = evaluate(stmt.value);
         }
         
-        throw new Return(value, false);
+        throw new Return(value, stmt.keyword.line, false);
     }
 
 
