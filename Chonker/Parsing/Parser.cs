@@ -321,7 +321,26 @@ public class Parser
         
         consumeError(LEFT_BRACE, "Expect '{' before " + kind + " body");
         List<Stmt> body = block();
-        
+
+        if (returnType != typeof(void))
+        {
+            bool foundReturn = false;
+            
+            foreach (var stmt in body)
+            {
+                if (stmt is not ReturnStmt) continue;
+                
+                foundReturn = true;
+                break;
+            }
+
+            if (!foundReturn)
+            {
+                throw new Error("Interpreter", "Expected return statement in " + kind + " of type " + returnType,
+                    name.lexeme, name.line);
+            }
+        }
+
         return new FunctionStmt(name, returnType, parameters, body);
     }
     

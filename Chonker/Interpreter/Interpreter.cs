@@ -52,7 +52,8 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     
     #region Execution
 
-    private void execute(Stmt stmt) {
+    private void execute(Stmt stmt) 
+    {
         stmt.accept(this);
     }
 

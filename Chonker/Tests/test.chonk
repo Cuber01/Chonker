@@ -1,1 +1,7 @@
-return;
+function number help() 
+{ 
+print "help";
+return 1;
+}
+
+help();
