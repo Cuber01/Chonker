@@ -42,14 +42,23 @@ namespace Chonker
             {
                 Error e = new Error("Interpreter", "Unexpected return statement", "", ret.line);
                 e.writeMessage();
+                
+                interpreter.hadError = true;
             }
+            catch (Break br)
+            {
+                Error e = new Error("Interpreter", "Unexpected break statement", "", br.line);
+                e.writeMessage();
 
+                interpreter.hadError = true;
+            }
 
             if (interpreter.hadError)
             {
                 Environment.Exit(1);
             }
 
+            
             Environment.Exit(0);
 
         }

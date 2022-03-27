@@ -4,10 +4,10 @@ namespace Chonker.Leaves;
 
 public class Break : Exception
 {
-    public Break(Token keyword)
+    public Break(int line)
     {
-        this.keyword = keyword;
+        this.line = line;
     }
 
-    public readonly Token keyword;
+    public readonly int line;
 }

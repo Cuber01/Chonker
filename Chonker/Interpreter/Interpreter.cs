@@ -175,7 +175,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     public object visitBreakStmt(BreakStmt stmt)
     {
-        throw new Break(stmt.keyword);
+        throw new Break(stmt.keyword.line);
     }
 
     #endregion
