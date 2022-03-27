@@ -27,6 +27,8 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         scope = globals;
         
         globals.define("clock", -1, typeof(Func<>) , new NativeFunctions.Clock());
+        globals.define("sleep", -1, typeof(Func<>) , new NativeFunctions.Sleep());
+        globals.define("round", -1, typeof(Func<>) , new NativeFunctions.Round());
     }
     
     public void interpret(List<Stmt> statements)
