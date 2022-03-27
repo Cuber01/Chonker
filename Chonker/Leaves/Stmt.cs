@@ -16,6 +16,7 @@ public abstract class Stmt
         TResult visitWhileStmt(WhileStmt stmt);
         TResult visitFunctionStmt(FunctionStmt stmt);
         TResult visitReturnStmt(ReturnStmt stmt);
+        TResult visitBreakStmt(BreakStmt stmt);
     }
 }
 
@@ -157,6 +158,21 @@ public class ReturnStmt : Stmt
     }
     
     public readonly Expr? value;
+    public readonly Token keyword;
+}
+
+public class BreakStmt : Stmt
+{
+    public BreakStmt(Token keyword)
+    {
+        this.keyword = keyword;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitBreakStmt(this);
+    }
+
     public readonly Token keyword;
 }
 

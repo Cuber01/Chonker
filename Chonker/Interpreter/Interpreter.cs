@@ -137,7 +137,14 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         while (isTruthy(evaluate(stmt.condition)))
         {
-            execute(stmt.body);
+            try
+            {
+                execute(stmt.body);    
+            } catch (Break br)
+            {
+                return null;
+            }
+            
         }
         
         return null;
@@ -166,6 +173,10 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         throw new Return(value, stmt.keyword.line, false);
     }
 
+    public object visitBreakStmt(BreakStmt stmt)
+    {
+        throw new Break(stmt.keyword);
+    }
 
     #endregion
 

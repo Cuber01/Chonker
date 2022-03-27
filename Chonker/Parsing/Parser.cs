@@ -107,6 +107,7 @@ public class Parser
         if (isMatch(SWITCH))     return switchStatement();
         if (isMatch(FUNCTION))   return function("function");
         if (isMatch(RETURN))     return returnStatement();
+        if (isMatch(BREAK))      return breakStatement();
         if (isMatch(LEFT_BRACE)) return new BlockStmt(block());
         
 
@@ -358,7 +359,13 @@ public class Parser
         return new ReturnStmt(keyword, value);
     }
 
-    
+    private Stmt breakStatement()
+    {
+        Token keyword = previousToken();
+        consumeError(SEMICOLON, "Expect ';' after break statement");
+        return new BreakStmt(keyword);
+    }
+
     #endregion
     
     #region Expressions

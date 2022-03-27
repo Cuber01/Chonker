@@ -61,6 +61,11 @@ public class AstPrinter : Expr.IVisitor<String?>, Stmt.IVisitor<String?>
         return build("return", stmt.value);
     }
 
+    public string? visitBreakStmt(BreakStmt stmt)
+    {
+        return build("break");
+    }
+
     #endregion
 
     #region Expressions
