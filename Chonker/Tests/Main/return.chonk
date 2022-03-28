@@ -3,4 +3,4 @@ function number one()
     return 1;
 }
 
-print one();
+puts one();

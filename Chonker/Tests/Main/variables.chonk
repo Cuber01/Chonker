@@ -3,6 +3,6 @@ var string b = "hello", bool c = true;
 
 b = "not hello";
 
-print a;
-print b;
-print c;
+puts a;
+puts b;
+puts c;

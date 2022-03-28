@@ -1,2 +1,2 @@
 var number a = 10.1;
-print round(a);
+puts round(a);

@@ -21,7 +21,7 @@ namespace Chonker.Tokens
         AND, CLASS, ELSE, FALSE, FUNCTION, FOR, IF, NULL, OR,
         PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE, BREAK,
         SWITCH, CASE, DEFAULT, STRING_KW, NUMBER_KW, BOOL_KW,
-        VOID,
+        VOID, PUTS,
 
         EOF
     }

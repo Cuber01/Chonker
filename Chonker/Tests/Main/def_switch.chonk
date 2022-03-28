@@ -3,17 +3,17 @@ switch(0)
     
     case 1:
     {
-        print "no gaming >:(";
+        puts "no gaming >:(";
     }
 
     case 2:
     {
-        print "no gaming >:(";
+        puts "no gaming >:(";
     }
 
     default:
     {
-        print "gaming";
+        puts "gaming";
     }
 
 }

@@ -1,6 +1,6 @@
 function void betterPrint(string text)
 {
-  print text;
+  puts text;
 }
 
 betterPrint("Hello World but Better"); 

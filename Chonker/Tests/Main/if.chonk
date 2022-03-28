@@ -1,7 +1,7 @@
 if(false)
 {
-    print "hello";
+    puts "hello";
 } else if (true)
 {
-    print "nah";
+    puts "nah";
 }

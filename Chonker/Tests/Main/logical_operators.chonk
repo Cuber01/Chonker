@@ -1,2 +1,2 @@
-print false || true;
-print false && false;
+puts false || true;
+puts false && false;

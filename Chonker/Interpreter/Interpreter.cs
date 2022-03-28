@@ -85,7 +85,16 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     public object? visitPrintStmt(PrintStmt stmt)
     {
         object result = evaluate(stmt.expression);
-        Console.WriteLine(stringify(result));
+
+        if (stmt.writeline)
+        {
+            Console.WriteLine(stringify(result));
+        }
+        else
+        {
+            Console.Write(stringify(result));
+        }
+        
         return null;
     }
     

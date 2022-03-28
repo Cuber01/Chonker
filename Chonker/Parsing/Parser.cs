@@ -100,7 +100,8 @@ public class Parser
     
     private Stmt statement()
     {
-        if (isMatch(PRINT))      return print();
+        if (isMatch(PRINT))      return print(false);
+        if (isMatch(PUTS))       return print(true);
         if (isMatch(IF))         return ifStatement();
         if (isMatch(WHILE))      return whileStatement();
         if (isMatch(FOR))        return forStatement();
@@ -134,11 +135,11 @@ public class Parser
         return enclosedStmts;
     }
     
-    private Stmt print() 
+    private Stmt print(bool writeline) 
     {
         Expr value = expression();
         consumeError(SEMICOLON, "Expect ';' after value");
-        return new PrintStmt(value);
+        return new PrintStmt(value, writeline);
     }
 
     private Stmt ifStatement()
@@ -707,6 +708,8 @@ public class Parser
                 case IF:
                 case WHILE:
                 case PRINT:
+                case PUTS:
+                case BREAK:
                 case RETURN:
                     return;
             }

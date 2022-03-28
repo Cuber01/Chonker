@@ -2,6 +2,6 @@ var number i = 10;
 
 while(i > 0)
 {
-    print i;
+    puts i;
     i = i - 1;
 }

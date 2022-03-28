@@ -43,6 +43,7 @@ namespace Chonker.Scanning
             { "case",        CASE        },
             { "default",     DEFAULT     },
             { "void",        VOID        },
+            { "puts",        PUTS        }
         };
 
         private int start;

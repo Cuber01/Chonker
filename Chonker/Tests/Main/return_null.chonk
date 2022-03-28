@@ -3,4 +3,4 @@ function number getNull()
     return null;
 }
 
-print getNull();
+puts getNull();

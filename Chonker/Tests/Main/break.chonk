@@ -11,5 +11,5 @@ while(true)
         a = a - 1;
     }
 
-    print "gaming";
+    puts "gaming";
 }

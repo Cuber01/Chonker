@@ -22,9 +22,10 @@ public abstract class Stmt
 
 public class PrintStmt : Stmt
 {
-    public PrintStmt(Expr expression)
+    public PrintStmt(Expr expression, bool writeline)
     {
         this.expression = expression;
+        this.writeline = writeline;
     }
 
     public override TResult accept<TResult>(IVisitor<TResult> visitor)
@@ -33,6 +34,7 @@ public class PrintStmt : Stmt
     }
 
     public readonly Expr expression;
+    public readonly bool writeline;
 }
 
 public class BlockStmt : Stmt

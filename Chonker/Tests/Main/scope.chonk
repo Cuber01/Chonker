@@ -6,14 +6,14 @@ var string c = "global c";
   var string b = "outer b";
   {
     var string a = "inner a";
-    print a;
-    print b;
-    print c;
+    puts a;
+    puts b;
+    puts c;
   }
-  print a;
-  print b;
-  print c;
+  puts a;
+  puts b;
+  puts c;
 }
-print a;
-print b;
-print c;
+puts a;
+puts b;
+puts c;

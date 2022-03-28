@@ -2,6 +2,6 @@ var number a;
 var string b;
 var bool c;
 
-print a;
-print b;
-print c;
+puts a;
+puts b;
+puts c;

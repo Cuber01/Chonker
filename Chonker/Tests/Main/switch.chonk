@@ -3,12 +3,12 @@ switch(1)
     
     case 0:
     {
-        print "no gaming >:(";
+        puts "no gaming >:(";
     }
 
     case 1:
     {
-        print "gaming";
+        puts "gaming";
     }
 
 }
