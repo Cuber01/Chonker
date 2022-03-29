@@ -15,7 +15,7 @@ namespace Chonker.Tokens
         LESS, LESS_EQUAL,
 
         // Literals.
-        IDENTIFIER, STRING, NUMBER, LIST,
+        IDENTIFIER, STRING, NUMBER,
 
         // Keywords.
         AND, CLASS, ELSE, FALSE, FUNCTION, FOR, IF, NULL, OR,

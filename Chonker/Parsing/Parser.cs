@@ -565,6 +565,11 @@ public class Parser
                 consumeError(RIGHT_PAREN, "Expect ')' after expression.");
                 return expr;
             }
+
+            case LEFT_BRACKET:
+            {
+                return list();
+            }
         }
         
         // Retract from advancing.
@@ -573,6 +578,60 @@ public class Parser
         error(currentToken(), "Expect expression");
 
         return null!;
+    }
+
+    private LiteralExpr list()
+    {
+        List<object?> value = new List<object?>();
+        Type? type = null;
+
+        bool expectValue = true;
+        
+        while (!isMatch(RIGHT_BRACKET))
+        {
+            switch (currentToken().type)
+            {
+                case COMMA:
+                {
+                    if(expectValue) throw new Error("Parser", "Expect value in list declaration", currentToken().lexeme, currentToken().line);
+
+                    expectValue = true;
+                    break;
+                }
+                
+                case TRUE:       addToValue(new LiteralExpr(true));                   break; 
+                case FALSE:      addToValue(new LiteralExpr(false));                  break;
+                case NULL:       addToValue(new LiteralExpr(null));                   break;
+                case NUMBER:     addToValue(new LiteralExpr(currentToken().literal)); break;
+                case STRING:     addToValue(new LiteralExpr(currentToken().literal)); break;
+                case IDENTIFIER: addToValue(new VariableExpr(previousToken()));  break;
+                
+                default:
+                    throw new Error("Parser", "Tried to add a wrong token type to a list", currentToken().lexeme,
+                        currentToken().line);
+            }
+            
+            advance();
+        }
+        
+        void addToValue(Expr expr)
+        {
+            if(!expectValue) throw new Error("Parser", "Expect ',' after value in list declaration", currentToken().lexeme, currentToken().line);
+
+            if (type is null)
+            {
+                type = expr.GetType();
+            }
+            else if (type != expr.GetType())
+            {
+                throw new Error("Parser", "List can hold only one type", currentToken().lexeme, currentToken().line);
+            }
+
+            expectValue = false;
+            value.Add(expr);
+        }
+
+        return new LiteralExpr(value);
     }
     
     #endregion
