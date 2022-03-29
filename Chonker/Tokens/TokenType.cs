@@ -6,7 +6,7 @@ namespace Chonker.Tokens
         // Single-character tokens.
         LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
         COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
-        COLON, QUESTION_MARK,
+        COLON, QUESTION_MARK, 
         
         // One or two character tokens.
         BANG, BANG_EQUAL,
@@ -15,7 +15,7 @@ namespace Chonker.Tokens
         LESS, LESS_EQUAL,
 
         // Literals.
-        IDENTIFIER, STRING, NUMBER,
+        IDENTIFIER, STRING, NUMBER, LIST,
 
         // Keywords.
         AND, CLASS, ELSE, FALSE, FUNCTION, FOR, IF, NULL, OR,

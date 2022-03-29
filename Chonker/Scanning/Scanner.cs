@@ -131,9 +131,6 @@ namespace Chonker.Scanning
                     }
                     break;
 
-                
-                case '"': handleString(); break;
-                
                 case ' ' : break;
                 case '\r': break;
                 case '\t': break;
@@ -170,16 +167,7 @@ namespace Chonker.Scanning
                 
 
                 default:
-                    if (isDigit(c)) 
-                    {
-                        handleNumber();
-                    } else if (isAlpha(c)) 
-                    {
-                        handleIdentifier();
-                    } else
-                    {
-                        throw new Error("Scanner", "Unexpected character '" + current + "'", "", line); 
-                    }
+                    handleValues(c);
                     break;
             }
         }
@@ -206,10 +194,13 @@ namespace Chonker.Scanning
             return source[current + 1];
         }
 
-        private void addToken(TokenType type, Object? literal = null) 
+        private Token addToken(TokenType type, Object? literal = null) 
         {
             string text = source.Substring(start, current - start);
-            tokens.Add(new Token(type, text, literal!, line));
+            Token newToken = new Token(type, text, literal!, line);
+            
+            tokens.Add(newToken);
+            return newToken;
         }
         
         private bool match(char expected)
@@ -225,7 +216,7 @@ namespace Chonker.Scanning
             return true;
         }
         
-        private void handleNumber()
+        private Token handleNumber()
         {
 
             while (isDigit(peek()))
@@ -245,13 +236,15 @@ namespace Chonker.Scanning
                 }
             }
             
-            addToken(NUMBER, Convert.ToDouble(source.Substring(start, current - start)));
+            return addToken(NUMBER, Convert.ToDouble(source.Substring(start, current - start)));
         }
         
-        private void handleString()
+        private Token handleString()
         {
-            while (peek() != '"' && !isAtEnd()) {
-                
+
+            while (peek() != '"' && !isAtEnd())
+            {
+
                 if (peek() == '\n')
                 {
                     line++;
@@ -270,10 +263,10 @@ namespace Chonker.Scanning
 
             // Trim the surrounding quotes.
             string value = source.Substring(start + 1, (current - start) - 2);
-            addToken(STRING, value);
+            return addToken(STRING, value);
         }
         
-        private void handleIdentifier() 
+        private Token handleIdentifier() 
         {
 
             while (isAlphaNumeric(peek()))
@@ -286,11 +279,78 @@ namespace Chonker.Scanning
             if (!keywords.TryGetValue(text, out var type))
             { 
                 // TODO
-               addToken(IDENTIFIER);
-               return;
+               return addToken(IDENTIFIER);
             }
 
-            addToken(type);
+            return addToken(type);
+        }
+
+        private Token handleList()
+        {
+            List<Token> list = new List<Token>();
+            bool expectValue = true;
+            
+            while (peek() != ']' && !isAtEnd())
+            {
+                if (expectValue)
+                {
+                    list.Add(handleValues(peek()));
+                    expectValue = false;
+                }
+                else
+                {
+                    if (peek() == ',')
+                    {
+                        advance();
+                    }
+                    else
+                    {
+                        throw new Error("Scanner", "Expect ','", "at " + current, line);
+                    }
+                }
+                
+                if (peek() == '\n')
+                {
+                    line++;
+                }
+                
+                advance();
+            }
+
+            if (isAtEnd()) 
+            {
+                throw new Error("Scanner","Unterminated list", "at " + current, line);
+            }
+
+            // The closing ]
+            advance();
+            
+            return addToken(LIST, list);
+        }
+
+        private Token handleValues(char c)
+        {
+            if (isDigit(c)) 
+            {
+                return handleNumber();
+            } 
+            
+            if (isAlpha(c)) 
+            {
+                return handleIdentifier();
+            }
+
+            if (c == '"')
+            {
+                handleString();
+            }
+            
+            if (c == '[')
+            {
+                return handleList();
+            } 
+            
+            throw new Error("Scanner", "Unexpected character '" + current + "'", "", line);
         }
         
         private bool isDigit(char c) 
