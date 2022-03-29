@@ -713,6 +713,7 @@ public class Parser
             case NUMBER_KW: return 0.0;
             case STRING_KW: return "";
             case BOOL_KW:   return false;
+            case LIST_KW:   return new List<object>();
             
             default: throw new Error("Internal", "Unknown type " + type, "", -1);
         }

@@ -412,8 +412,15 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         {
             return "null";
         }
+
+        string text = "";
         
-        string text = obj.ToString()!;
+        if (obj is List<object?> list)
+        {
+            return "list";
+        }
+        
+        text = obj.ToString()!;
 
         if (text.EndsWith(".0"))
         {
