@@ -74,7 +74,7 @@ public class Parser
     
     private Stmt varDeclaration() 
     {
-        Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW, BOOL_KW);
+        Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW, BOOL_KW, LIST_KW);
         Token name = consumeError(IDENTIFIER, "Expect variable name");
 
         // TODO if initializer is null impplement a default value depending on type
@@ -583,8 +583,6 @@ public class Parser
     private LiteralExpr list()
     {
         List<object?> value = new List<object?>();
-        Type? type = null;
-
         bool expectValue = true;
         
         while (!isMatch(RIGHT_BRACKET))
@@ -617,15 +615,6 @@ public class Parser
         void addToValue(Expr expr)
         {
             if(!expectValue) throw new Error("Parser", "Expect ',' after value in list declaration", currentToken().lexeme, currentToken().line);
-
-            if (type is null)
-            {
-                type = expr.GetType();
-            }
-            else if (type != expr.GetType())
-            {
-                throw new Error("Parser", "List can hold only one type", currentToken().lexeme, currentToken().line);
-            }
 
             expectValue = false;
             value.Add(expr);
@@ -711,6 +700,7 @@ public class Parser
             NUMBER_KW => typeof(Double),
             STRING_KW => typeof(String),
             BOOL_KW => typeof(Boolean),
+            LIST_KW => typeof(List<object?>),
             VOID => typeof(void),
             _ => throw new Error("Interpreter", "Unknown variable type " + token.type, token.lexeme, token.line)
         };
