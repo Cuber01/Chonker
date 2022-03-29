@@ -2,10 +2,8 @@ using Chonker.Tokens;
 using static Chonker.Tokens.TokenType;
 
 /*
-
 This is the scanner, the first step in the journey of our language implementation.
 It's essentially just a script that transcribes text into Tokens, algorithmically it's not much, so let's just talk about what a token is.
-
 See Tokens/Token.cs
  
 */
@@ -86,6 +84,8 @@ namespace Chonker.Scanning
             switch (c) {
                 case '(': addToken(LEFT_PAREN); break;
                 case ')': addToken(RIGHT_PAREN); break;
+                case '[': addToken(LEFT_BRACKET); break;
+                case ']': addToken(RIGHT_BRACKET); break;    
                 case '{': addToken(LEFT_BRACE); break;
                 case '}': addToken(RIGHT_BRACE); break;
                 case ',': addToken(COMMA); break;
@@ -131,6 +131,9 @@ namespace Chonker.Scanning
                     }
                     break;
 
+                
+                case '"': handleString(); break;
+                
                 case ' ' : break;
                 case '\r': break;
                 case '\t': break;
@@ -167,7 +170,16 @@ namespace Chonker.Scanning
                 
 
                 default:
-                    handleValues(c);
+                    if (isDigit(c)) 
+                    {
+                        handleNumber();
+                    } else if (isAlpha(c)) 
+                    {
+                        handleIdentifier();
+                    } else
+                    {
+                        throw new Error("Scanner", "Unexpected character '" + current + "'", "", line); 
+                    }
                     break;
             }
         }
@@ -194,13 +206,10 @@ namespace Chonker.Scanning
             return source[current + 1];
         }
 
-        private Token addToken(TokenType type, Object? literal = null) 
+        private void addToken(TokenType type, Object? literal = null) 
         {
             string text = source.Substring(start, current - start);
-            Token newToken = new Token(type, text, literal!, line);
-            
-            tokens.Add(newToken);
-            return newToken;
+            tokens.Add(new Token(type, text, literal!, line));
         }
         
         private bool match(char expected)
@@ -216,7 +225,7 @@ namespace Chonker.Scanning
             return true;
         }
         
-        private Token handleNumber()
+        private void handleNumber()
         {
 
             while (isDigit(peek()))
@@ -236,15 +245,13 @@ namespace Chonker.Scanning
                 }
             }
             
-            return addToken(NUMBER, Convert.ToDouble(source.Substring(start, current - start)));
+            addToken(NUMBER, Convert.ToDouble(source.Substring(start, current - start)));
         }
         
-        private Token handleString()
+        private void handleString()
         {
-
-            while (peek() != '"' && !isAtEnd())
-            {
-
+            while (peek() != '"' && !isAtEnd()) {
+                
                 if (peek() == '\n')
                 {
                     line++;
@@ -263,10 +270,10 @@ namespace Chonker.Scanning
 
             // Trim the surrounding quotes.
             string value = source.Substring(start + 1, (current - start) - 2);
-            return addToken(STRING, value);
+            addToken(STRING, value);
         }
         
-        private Token handleIdentifier() 
+        private void handleIdentifier() 
         {
 
             while (isAlphaNumeric(peek()))
@@ -279,78 +286,11 @@ namespace Chonker.Scanning
             if (!keywords.TryGetValue(text, out var type))
             { 
                 // TODO
-               return addToken(IDENTIFIER);
+               addToken(IDENTIFIER);
+               return;
             }
 
-            return addToken(type);
-        }
-
-        private Token handleList()
-        {
-            List<Token> list = new List<Token>();
-            bool expectValue = true;
-            
-            while (peek() != ']' && !isAtEnd())
-            {
-                if (expectValue)
-                {
-                    list.Add(handleValues(peek()));
-                    expectValue = false;
-                }
-                else
-                {
-                    if (peek() == ',')
-                    {
-                        advance();
-                    }
-                    else
-                    {
-                        throw new Error("Scanner", "Expect ','", "at " + current, line);
-                    }
-                }
-                
-                if (peek() == '\n')
-                {
-                    line++;
-                }
-                
-                advance();
-            }
-
-            if (isAtEnd()) 
-            {
-                throw new Error("Scanner","Unterminated list", "at " + current, line);
-            }
-
-            // The closing ]
-            advance();
-            
-            return addToken(LIST, list);
-        }
-
-        private Token handleValues(char c)
-        {
-            if (isDigit(c)) 
-            {
-                return handleNumber();
-            } 
-            
-            if (isAlpha(c)) 
-            {
-                return handleIdentifier();
-            }
-
-            if (c == '"')
-            {
-                handleString();
-            }
-            
-            if (c == '[')
-            {
-                return handleList();
-            } 
-            
-            throw new Error("Scanner", "Unexpected character '" + current + "'", "", line);
+            addToken(type);
         }
         
         private bool isDigit(char c) 
