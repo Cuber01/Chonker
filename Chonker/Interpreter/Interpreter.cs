@@ -27,6 +27,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         scope = globals;
         
         globals.define("clock", -1, typeof(Func<>) , new NativeFunctions.Clock());
+        globals.define("count", -1, typeof(Func<>) , new NativeFunctions.Count());
         globals.define("sleep", -1, typeof(Func<>) , new NativeFunctions.Sleep());
         globals.define("round", -1, typeof(Func<>) , new NativeFunctions.Round());
     }
@@ -380,13 +381,27 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     public object visitSubscriptionExpr(SubscriptionExpr expr)
     {
-        object result = evaluate(expr.list);
 
-        if (result is not List<object?> list)
+        object traverse(SubscriptionExpr exp)
         {
-            return result;
+
+            if (exp.list is SubscriptionExpr subexp)
+            {
+                return traverse(subexp);
+            }
+            
+            object result = evaluate(exp.list);
+            
+            if (result is List<object?>)
+            {
+                return result;
+            }
+
+            // Unreachable.
+            return null!;
         }
 
+        List<object?> list = (List<object?>)traverse(expr);
         int index = (int)Convert.ToDouble(evaluate(expr.index));
         
         if (index >= 0 && index < list.Count)

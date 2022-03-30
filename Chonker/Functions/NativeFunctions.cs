@@ -87,7 +87,8 @@ namespace Chonker.Functions
 
             public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
             {
-                return Math.Round((Double)arguments[0]);
+                List<object?> list = (List<object?>)arguments[0];
+                return Convert.ToDouble(list.Count);
             }
 
             public override List<Type>? getParameterTypes()
