@@ -2,37 +2,40 @@ namespace Chonker.Functions
 {
     public static class NativeFunctions
     {
-        public class Clock : Callable
+        public abstract class NativeFunction : Callable
         {
-            public int arity()
-            {
-                return 0;
-            }
+            public abstract object? call(Interpreter.Interpreter interpreter, List<object> arguments);
 
-            public object call(Interpreter.Interpreter interpreter, List<Object> arguments)
+            public abstract int arity();
+
+            public abstract List<Type>? getParameterTypes();
+
+            public override string ToString()
+            {
+                return "<native function>";
+            }
+        }
+        
+        public class Clock : NativeFunction
+        {
+            public override int arity() => 1;
+
+            public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
             {
                 return DateTime.Now;
             }
 
-            public String toString()
-            {
-                return "<native fn>";
-            }
-
-            public List<Type>? getParameterTypes()
+            public override List<Type>? getParameterTypes()
             {
                 return null;
             } 
         }
         
-        public class Sleep : Callable
+        public class Sleep : NativeFunction
         {
-            public int arity()
-            {
-                return 1;
-            }
+            public override int arity() => 1;
 
-            public object? call(Interpreter.Interpreter interpreter, List<Object> arguments)
+            public override object? call(Interpreter.Interpreter interpreter, List<Object> arguments)
             {
                 double time = (double)arguments[0];
                 int timeInt = Convert.ToInt32(arguments[0]);
@@ -50,12 +53,7 @@ namespace Chonker.Functions
                 return null;
             }
 
-            public String toString()
-            {
-                return "<native fn>";
-            }
-
-            public List<Type>? getParameterTypes()
+            public override List<Type>? getParameterTypes()
             {
                 return new List<Type>
                 {
@@ -64,28 +62,39 @@ namespace Chonker.Functions
             } 
         }
         
-        public class Round : Callable
+        public class Round : NativeFunction
         {
-            public int arity()
-            {
-                return 1;
-            }
+            public override int arity() => 1;
 
-            public object call(Interpreter.Interpreter interpreter, List<Object> arguments)
+            public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
             {
                 return Math.Round((Double)arguments[0]);
             }
+            
 
-            public String toString()
-            {
-                return "<native fn>";
-            }
-
-            public List<Type>? getParameterTypes()
+            public override List<Type>? getParameterTypes()
             {
                 return new List<Type>
                 {
                     typeof(Double)
+                };
+            } 
+        }
+        
+        public class Count : NativeFunction
+        {
+            public override int arity() => 1;
+
+            public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
+            {
+                return Math.Round((Double)arguments[0]);
+            }
+
+            public override List<Type>? getParameterTypes()
+            {
+                return new List<Type>
+                {
+                    typeof(List<object?>)
                 };
             } 
         }
