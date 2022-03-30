@@ -29,7 +29,7 @@ To see what expressions are, go to Expressions/Expr.cs
 
 public class Parser
 {
-    private List<Stmt> statements = new List<Stmt>();
+    private readonly List<Stmt> statements = new List<Stmt>();
     private readonly List<Token> tokens;
     private int currentIndex;
 
@@ -514,12 +514,23 @@ public class Parser
 
         if (isMatch(LEFT_BRACKET))
         {
-            Expr index = expression();
-            Token bracket = consumeError(RIGHT_BRACKET, "Expect ] after list subscription.");
-            expr = new SubscriptionExpr(expr, index, bracket);
+            expr = finishSubscription(expr);
         }
 
         return expr;
+    }
+
+    private Expr finishSubscription(Expr expr)
+    {
+        Expr index = expression();
+        Token bracket = consumeError(RIGHT_BRACKET, "Expect ] after list subscription.");
+
+        if (isMatch(LEFT_BRACKET))
+        {
+            expr = finishSubscription(expr);
+        }
+        
+        return new SubscriptionExpr(expr, index, bracket);
     }
     
     private Expr call() 

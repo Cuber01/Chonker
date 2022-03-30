@@ -380,12 +380,18 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     public object visitSubscriptionExpr(SubscriptionExpr expr)
     {
-        List<object?> list = (List<object?>)evaluate(expr.list); // TODO try catch
-        int index = (int)Convert.ToDouble(evaluate(expr.index));
+        object result = evaluate(expr.list);
 
+        if (result is not List<object?> list)
+        {
+            return result;
+        }
+
+        int index = (int)Convert.ToDouble(evaluate(expr.index));
+        
         if (index >= 0 && index < list.Count)
         {
-            return evaluate((Expr)list.ElementAt(index));    
+            return evaluate((Expr)list.ElementAt(index)!);    
         }
         else
         {
@@ -429,14 +435,12 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
             return "null";
         }
 
-        string text = "";
-        
-        if (obj is List<object?> list)
+        if (obj is List<object?>)
         {
             return "list";
         }
         
-        text = obj.ToString()!;
+        var text = obj.ToString()!;
 
         if (text.EndsWith(".0"))
         {
