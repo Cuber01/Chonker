@@ -456,11 +456,11 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         
         if (token.type == TokenType.EOF)
         {
-            where = "at end.";
+            where = "end";
         } 
         else 
         {
-            where = $"at {token.lexeme}.";
+            where = $"{token.lexeme}";
         }
         
         throw new Error("Interpreter", message, where, token.line);

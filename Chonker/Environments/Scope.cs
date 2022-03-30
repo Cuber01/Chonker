@@ -43,7 +43,7 @@ public class Scope
         
         if (enclosing != null) return enclosing.getValue(name);
         
-        throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
+        throw new Error("Interpreter", "Unknown variable '" + name + "'", $"[{name.lexeme}]", name.line);
     }
 
     public Type? getType(Token name)
@@ -55,7 +55,7 @@ public class Scope
 
         if (enclosing != null) return enclosing.getType(name);
         
-        throw new Error("Interpreter", "Unknown variable '" + name + "'", $"at [{name.lexeme}]", name.line);
+        throw new Error("Interpreter", "Unknown variable '" + name + "'", $"[{name.lexeme}]", name.line);
     }
     
     public void assign(Token name, Object value)
@@ -74,7 +74,7 @@ public class Scope
             return;
         }
 
-        throw new Error("Interpreter","Undefined variable '" + name.lexeme + "'" , $"at [{name.lexeme}]", name.line);
+        throw new Error("Interpreter","Undefined variable '" + name.lexeme + "'" , $"[{name.lexeme}]", name.line);
     }
 
     #region Error

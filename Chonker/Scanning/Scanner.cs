@@ -263,7 +263,7 @@ namespace Chonker.Scanning
 
             if (isAtEnd()) 
             {
-                throw new Error("Scanner","Unterminated string", "at " + current, line);
+                throw new Error("Scanner","Unterminated string", current.ToString(), line);
             }
 
             // The closing "
