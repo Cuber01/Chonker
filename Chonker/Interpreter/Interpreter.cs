@@ -381,27 +381,13 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     public object visitSubscriptionExpr(SubscriptionExpr expr)
     {
+        object result = evaluate(expr.list);
 
-        object traverse(SubscriptionExpr exp)
+        if (result is not List<object?> list)
         {
-
-            if (exp.list is SubscriptionExpr subexp)
-            {
-                return traverse(subexp);
-            }
-            
-            object result = evaluate(exp.list);
-            
-            if (result is List<object?>)
-            {
-                return result;
-            }
-
-            // Unreachable.
-            return null!;
+            return result;
         }
 
-        List<object?> list = (List<object?>)traverse(expr);
         int index = (int)Convert.ToDouble(evaluate(expr.index));
         
         if (index >= 0 && index < list.Count)
