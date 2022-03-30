@@ -378,6 +378,22 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         }
     }
 
+    public object visitSubscriptionExpr(SubscriptionExpr expr)
+    {
+        List<object?> list = (List<object?>)evaluate(expr.list); // TODO try catch
+        int index = (int)Convert.ToDouble(evaluate(expr.index));
+
+        if (index >= 0 && index < list.Count)
+        {
+            return evaluate((Expr)list.ElementAt(index));    
+        }
+        else
+        {
+            throw new Error("Parser", "Index " + index + " is outside of the bounds of the given list",
+                expr.bracket.lexeme, expr.bracket.line);
+        }
+    }
+
     #endregion
 
     #region Util

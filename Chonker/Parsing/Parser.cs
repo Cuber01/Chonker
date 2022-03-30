@@ -505,7 +505,21 @@ public class Parser
             return new UnaryExpr(operant, right);
         }
         
-        return call();
+        return subscription();
+    }
+
+    private Expr subscription()
+    {
+        Expr expr = call();
+
+        if (isMatch(LEFT_BRACKET))
+        {
+            Expr index = expression();
+            Token bracket = consumeError(RIGHT_BRACKET, "Expect ] after list subscription.");
+            expr = new SubscriptionExpr(expr, index, bracket);
+        }
+
+        return expr;
     }
     
     private Expr call() 
@@ -593,23 +607,22 @@ public class Parser
                 {
                     if(expectValue) throw new Error("Parser", "Expect value in list declaration", currentToken().lexeme, currentToken().line);
 
+                    advance();
+                    
                     expectValue = true;
                     break;
                 }
-                
-                case TRUE:       addToValue(new LiteralExpr(true));                   break; 
-                case FALSE:      addToValue(new LiteralExpr(false));                  break;
-                case NULL:       addToValue(new LiteralExpr(null));                   break;
-                case NUMBER:     addToValue(new LiteralExpr(currentToken().literal)); break;
-                case STRING:     addToValue(new LiteralExpr(currentToken().literal)); break;
-                case IDENTIFIER: addToValue(new VariableExpr(previousToken()));  break;
-                
+
                 default:
-                    throw new Error("Parser", "Tried to add a wrong token type to a list", currentToken().lexeme,
-                        currentToken().line);
+                    addToValue(expression());
+
+                    expectValue = false;
+                    break;
+                    // throw new Error("Parser", "Tried to add a wrong token type to a list", currentToken().lexeme,
+                    //     currentToken().line);
             }
             
-            advance();
+
         }
         
         void addToValue(Expr expr)

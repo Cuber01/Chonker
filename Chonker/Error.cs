@@ -23,13 +23,13 @@ public class Error : Exception
         Console.Write($"[ {line} ] ");
         Console.Write(message);
 
-        if (where.Length > 0)
+        if (where.Length == 0)
         {
             Console.Write('.');
         }
         else
         {
-            Console.Write(where + '.');
+            Console.Write(" at " + $"'{where}'" + '.');
         }
         
         Console.Write("\n\n");
