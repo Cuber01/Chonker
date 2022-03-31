@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using Chonker.Functions;
+﻿using Chonker.Functions;
 using Chonker.Leaves;
 using Chonker.Parsing;
 using Chonker.Scanning;
@@ -14,19 +13,19 @@ namespace Chonker
         {
             if (args.Length == 0)
             {
-                runRepl(); // Exits
+                runRepl(); 
             }
             
             if (args[0] == "--help")
             {
-                help(); // Exits
+                help(); 
             }
             
             if (args[0] == "--source")
             {
                 if (args.Length >= 2)
                 {
-                    runFromString(args[1]);    
+                    runFromString(args[1], true);    
                 }
                 {
                     Console.WriteLine("Expect string after --source.");
@@ -35,24 +34,46 @@ namespace Chonker
             }
             
             string source = FileReader.getFileString(args[0]);
-            runFromString(source); // Exits
+            runFromString(source, true); // Exits
+            Environment.Exit(0);
         }
 
         private static void runRepl()
         {
-            
-            
-            Environment.Exit(0);
+            while (true)
+            {
+                Console.Write("> ");
+                string? source = Console.ReadLine();
+                
+                if (String.IsNullOrWhiteSpace(source))
+                {
+
+                }
+                else
+                {
+                    if (!source.EndsWith(';'))
+                    {
+                        source += ';';
+                    }
+
+                    if (!source.StartsWith("puts "))
+                    {
+                        source = source.Insert(0, "puts ");
+                    }
+                    runFromString(source, false);
+                }
+            }
+
         }
         
-        private static void runFromString(string source)
+        private static void runFromString(string source, bool exitOnError)
         {
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
 
             if (scanner.hadError)
             {
-                Environment.Exit(1);
+                if(exitOnError) Environment.Exit(1); else return;
             }
             
             Parser parser = new Parser(tokens);
@@ -60,7 +81,7 @@ namespace Chonker
 
             if (parser.hadError)
             {
-                Environment.Exit(1);
+                if(exitOnError) Environment.Exit(1); else return;
             }
 
             Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
@@ -85,10 +106,8 @@ namespace Chonker
 
             if (interpreter.hadError)
             {
-                Environment.Exit(1);
+                if(exitOnError) Environment.Exit(1);
             }
-            
-            Environment.Exit(0);
         }
 
         private static void help()
@@ -102,8 +121,6 @@ namespace Chonker
             Console.WriteLine("[path to file]      - run source from file\n");
                 
             Console.WriteLine("If there are no args provided, a REPL will launch.");
-                
-            Environment.Exit(0);
         }
     }
 }
