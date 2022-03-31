@@ -22,6 +22,18 @@ namespace Chonker
                 help(); // Exits
             }
             
+            if (args[0] == "--source")
+            {
+                if (args.Length >= 2)
+                {
+                    runFromString(args[1]);    
+                }
+                {
+                    Console.WriteLine("Expect string after --source.");
+                    Environment.Exit(1);
+                }
+            }
+            
             string source = FileReader.getFileString(args[0]);
             runFromString(source); // Exits
         }
@@ -85,8 +97,9 @@ namespace Chonker
             Console.WriteLine("https://github.com/Cuber01/Chonker\n");
                 
             Console.WriteLine("Optional Args:");
-            Console.WriteLine("--help         - display this help prompt");
-            Console.WriteLine("[path to file] - run program from file\n");
+            Console.WriteLine("--help              - display this help prompt");
+            Console.WriteLine("--source '[string]' - run given string as source");
+            Console.WriteLine("[path to file]      - run source from file\n");
                 
             Console.WriteLine("If there are no args provided, a REPL will launch.");
                 
