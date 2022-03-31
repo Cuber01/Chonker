@@ -391,7 +391,12 @@ public class Parser
                 return new AssignExpr(name, value);
             }
 
-            error(equals, "Invalid assignment target."); 
+            if (expr is SubscriptionExpr subscriptionExpr)
+            {
+                return new ListAssignExpr(subscriptionExpr.list, value, subscriptionExpr.index, equals);
+            }
+
+            error(equals, "Invalid assignment target"); 
         }
 
         return expr;

@@ -30,6 +30,7 @@ public abstract class Expr
         TResult visitCallExpr(CallExpr expr);
         TResult visitTernaryExpr(TernaryExpr expr);
         TResult visitSubscriptionExpr(SubscriptionExpr expr);
+        TResult visitListAssignExpr(ListAssignExpr expr);
     }
 }
 
@@ -175,6 +176,27 @@ public class AssignExpr : Expr
 
     public readonly Token name;
     public readonly Expr value;
+}
+
+public class ListAssignExpr : Expr
+{
+    public ListAssignExpr(Expr list, Expr value, Expr index, Token equals)
+    {
+        this.list = list;
+        this.value = value;
+        this.index = index;
+        this.equals = equals;
+    }
+    
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitListAssignExpr(this);
+    }
+
+    public readonly Expr list;
+    public readonly Expr value;
+    public readonly Expr index;
+    public readonly Token equals;
 }
 
 public class SubscriptionExpr : Expr

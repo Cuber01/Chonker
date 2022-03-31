@@ -408,6 +408,29 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         }
     }
 
+    public object visitListAssignExpr(ListAssignExpr expr)
+    {
+        object result = evaluate(expr.list);
+
+        if (result is not List<object?> list)
+        {
+            return result;
+        }
+
+        int index = (int)Convert.ToDouble(evaluate(expr.index));
+        
+        if (index >= 0 && index < list.Count)
+        {
+            list[index] = expr.value;
+            return list.ElementAt(index)!;
+        }
+        else
+        {
+            throw new Error("Parser", "Index " + index + " is outside of the bounds of the given list",
+                expr.equals.lexeme, expr.equals.line);
+        }
+    }
+
     #endregion
 
     #region Util

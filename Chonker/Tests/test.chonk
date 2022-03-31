@@ -1,5 +1,5 @@
-var list a = [1, null];
+var list a = [1, 2];
 
-a = remove(a, 0);
+a[0] = 2;
 
-puts a[0];
+print a[0];
