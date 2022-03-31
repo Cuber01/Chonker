@@ -396,7 +396,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         {
             if (list.ElementAt(index) is not Expr)
             {
-                return list.ElementAt(index);
+                return list.ElementAt(index)!;
             }
             
             return evaluate((Expr)list.ElementAt(index)!);    

@@ -128,7 +128,7 @@ namespace Chonker.Functions
             public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
             {
                 List<object?> list = (List<object?>)arguments[0];
-                list.Remove(arguments[1]);
+                list.RemoveAt((int)(double)arguments[1]);
                 return list;
             }
 
