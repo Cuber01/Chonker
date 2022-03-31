@@ -99,5 +99,47 @@ namespace Chonker.Functions
                 };
             } 
         }
+        
+        public class Add : NativeFunction
+        {
+            public override int arity() => 2;
+
+            public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
+            {
+                List<object?> list = (List<object?>)arguments[0];
+                list.Add(arguments[1]);
+                return list;
+            }
+
+            public override List<Type>? getParameterTypes()
+            {
+                return new List<Type>
+                {
+                    typeof(List<object?>),
+                    typeof(object)
+                };
+            } 
+        }
+        
+        public class Remove : NativeFunction
+        {
+            public override int arity() => 2;
+
+            public override object call(Interpreter.Interpreter interpreter, List<Object> arguments)
+            {
+                List<object?> list = (List<object?>)arguments[0];
+                list.Remove(arguments[1]);
+                return list;
+            }
+
+            public override List<Type>? getParameterTypes()
+            {
+                return new List<Type>
+                {
+                    typeof(List<object?>),
+                    typeof(object)
+                };
+            } 
+        }
     }
 }

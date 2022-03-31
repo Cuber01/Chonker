@@ -26,10 +26,12 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
         scope = globals;
         
-        globals.define("clock", -1, typeof(Func<>) , new NativeFunctions.Clock());
-        globals.define("count", -1, typeof(Func<>) , new NativeFunctions.Count());
-        globals.define("sleep", -1, typeof(Func<>) , new NativeFunctions.Sleep());
-        globals.define("round", -1, typeof(Func<>) , new NativeFunctions.Round());
+        globals.define("clock",  -1, typeof(Func<>) , new NativeFunctions.Clock());
+        globals.define("count",  -1, typeof(Func<>) , new NativeFunctions.Count());
+        globals.define("sleep",  -1, typeof(Func<>) , new NativeFunctions.Sleep());
+        globals.define("round",  -1, typeof(Func<>) , new NativeFunctions.Round());
+        globals.define("remove",    -1, typeof(Func<>) , new NativeFunctions.Remove());
+        globals.define("add", -1, typeof(Func<>) , new NativeFunctions.Add());
     }
     
     public void interpret(List<Stmt> statements)
@@ -354,7 +356,7 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
                 Type got = arguments[i].GetType();
                 Type expected = paramTypes[i];
             
-                if (got != expected)
+                if (got != expected && expected != typeof(object))
                 {
                     throw new Error("Interpreter", "Expected argument of type " + expected + " but got " + got,
                         expr.paren.lexeme, expr.paren.line);
@@ -392,6 +394,11 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         
         if (index >= 0 && index < list.Count)
         {
+            if (list.ElementAt(index) is not Expr)
+            {
+                return list.ElementAt(index);
+            }
+            
             return evaluate((Expr)list.ElementAt(index)!);    
         }
         else
