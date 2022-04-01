@@ -137,17 +137,21 @@ if(true)
     puts "Unreachable";
 }
 
-// TODO Switch statements currently do not work and are under heavy works
-switch(true)
+switch(10)
 {
-    case true:
+    case 10:
     {
         puts "Truth!";
         // Do note that unlike in other langs there's currently no pass through
         // and all switch cases break by default
     }
     
-    case false:
+    case > 9
+    {
+        puts "Also Truth!";
+    }
+    
+    case 9:
     {
         puts "Unreachable!";
     }

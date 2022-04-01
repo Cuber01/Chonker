@@ -198,8 +198,6 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
         foreach (var pair in stmt.cases)
         {
-            if (foundCase) break;
-            
             if (isTruthy(evaluate(pair.Key))) 
             {
                 execute(pair.Value);
