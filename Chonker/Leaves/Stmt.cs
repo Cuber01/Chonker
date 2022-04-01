@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Chonker.Tokens;
 
 namespace Chonker.Leaves;
@@ -17,6 +18,7 @@ public abstract class Stmt
         TResult visitFunctionStmt(FunctionStmt stmt);
         TResult visitReturnStmt(ReturnStmt stmt);
         TResult visitBreakStmt(BreakStmt stmt);
+        TResult visitSwitchStmt(SwitchStmt stmt);
     }
 }
 
@@ -101,6 +103,23 @@ public class WhileStmt : Stmt
 
     public readonly Expr condition;
     public readonly Stmt body;
+}
+
+public class SwitchStmt : Stmt
+{
+    public SwitchStmt(Dictionary<Expr, BlockStmt> cases, BlockStmt defaultStmt)
+    {
+        this.cases = cases;
+        this.defaultStmt = defaultStmt;
+    }
+
+    public override TResult accept<TResult>(IVisitor<TResult> visitor)
+    {
+        return visitor.visitSwitchStmt(this);
+    }
+
+    public readonly Dictionary<Expr, BlockStmt> cases;
+    public readonly BlockStmt defaultStmt;
 }
 
 
