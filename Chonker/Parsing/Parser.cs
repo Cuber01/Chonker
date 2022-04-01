@@ -235,12 +235,11 @@ public class Parser
 
     private Stmt switchStatement()
     {
-        IfStmt? currentIf = null;
+        Dictionary<Stmt, Stmt> cases = new Dictionary<Stmt, Stmt>();
         Stmt? defaultBranch = null;
-        List<IfStmt> cases = new List<IfStmt>();
 
         consumeError(LEFT_PAREN, "Expect '(' after 'switch'");
-        Expr expr = expression();
+        Expr value = expression();
         consumeError(RIGHT_PAREN, "Expect ')' after expression in switch");
         
         consumeError(LEFT_BRACE, "Expect '{' after switch()");
@@ -252,14 +251,23 @@ public class Parser
             // Case
             if (caseOrDefault.type is CASE)
             {
-                Expr condition = new BinaryExpr(expression(),
-                    new Token(EQUAL_EQUAL, "==", null, -1),
-                    expr);
+                Stmt condition;
+                Token? operant = isMatchRetToken(LESS, GREATER, GREATER_EQUAL, LESS_EQUAL, EQUAL_EQUAL, BANG_EQUAL);
+                Expr right = expression();
+                
+                if (operant is not null)
+                {
+                    condition = new ExpressionStmt(new BinaryExpr(value, operant, right));
+                }
+                else
+                {
+                    condition = new ExpressionStmt(new BinaryExpr(value, 
+                        new Token(EQUAL_EQUAL, "<artificially created>", null, -1),
+                        right));
+                }
 
-                consumeError(COLON, "Expect ':' after case/default condition");
-
-                Stmt caseBody = statement();
-                cases.Add(new IfStmt(condition, caseBody, currentIf));
+                Stmt body = statement();
+                cases.Add(condition, body);
             }
             else // Default
             {
@@ -278,26 +286,8 @@ public class Parser
         
         consumeError(RIGHT_BRACE, "Expect '}' after switch body");
 
-
-        for (var i = 0; i < cases.Count; i++)
-        {
-            
-            var _case = cases[i];
-            if (i == 0 && defaultBranch != null)
-            {
-                IfStmt def = new IfStmt(new LiteralExpr(false), null!, defaultBranch);
-
-                currentIf = new IfStmt(_case.condition, _case.thenBranch, def);
-            }
-            else
-            {
-                currentIf = _case;
-            }
-            
-        }
-
         // TODO return literally nothing if null
-        return currentIf!;
+        return new SwitchStmt(cases, defaultBranch);
     }
 
     private FunctionStmt function(string kind)
@@ -669,6 +659,21 @@ public class Parser
 
         return false;
     }
+    
+    private Token? isMatchRetToken(params TokenType[] types)
+    {
+        Token currentToken = tokens[currentIndex];
+        foreach (var type in types)
+        {
+            if (currentToken.type == type)
+            {
+                advance();
+                return currentToken;
+            }
+        }
+
+        return null;
+    }
 
     private void retract()
     {
@@ -784,6 +789,7 @@ public class Parser
                 case FUNCTION:
                 case VAR:
                 case FOR:
+                case SWITCH:    
                 case IF:
                 case WHILE:
                 case PRINT:
