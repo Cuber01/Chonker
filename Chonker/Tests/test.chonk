@@ -1,9 +1,9 @@
-switch(0)
+switch(10)
 {
     
-    case 1:
+    case > 1:
     {
-        puts "no gaming >:(";
+        puts "no gaming >:(1";
     }
 
     case 2:
@@ -17,3 +17,4 @@ switch(0)
     }
 
 }
+

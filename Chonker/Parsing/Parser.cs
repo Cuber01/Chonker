@@ -265,6 +265,8 @@ public class Parser
                         new Token(EQUAL_EQUAL, "<artificially created>", null, -1),
                         right);
                 }
+                
+                consumeError(COLON, "Expect ':' after case/default condition");
 
                 Stmt body = statement();
                 cases.Add(condition, body);
@@ -278,7 +280,7 @@ public class Parser
                         caseOrDefault.lexeme, caseOrDefault.line);
                 }
                 
-                consumeError(COLON, "Expect ':' after case/default condition");
+                consumeError(COLON, "Expect ':' after default condition");
                 
                 defaultBranch = statement();
             }
