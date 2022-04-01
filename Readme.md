@@ -30,6 +30,26 @@ Then simply
 
 See [HowToUse.md](https://github.com/Cuber01/Chonker/blob/master/HowToUse.md) for commandline arguments.
 
+# Tests
+
+## Running
+
+To run tests, execute `run_tests.py` at `Chonker/Chonker/Tests`
+```sh
+python3 run_tests.py
+```
+
+## Writing
+
+### Normal
+
+1. Write your test as a `yourname.chonk` file and put it at `Chonker/Chonker/Tests/Main`
+2. Write the expected output of your test and put it at `Chonker/Chonker/Tests/Main/Output`, name it `yourname.out`
+
+### Error Catch
+
+1. Write your test as a `yourname.chonk` file and put it at `Chonker/Chonker/Tests/Error`
+
 # Credits
 
 Robert Nystrom for writing a [great book](http://craftinginterpreters.com/).

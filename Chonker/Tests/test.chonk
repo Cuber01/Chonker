@@ -1,8 +1,19 @@
-var list a = [[9, 8], 2];
-var list b = ["string"];
+switch(0)
+{
+    
+    case 1:
+    {
+        puts "no gaming >:(";
+    }
 
-a[1][0] = 2;
-b[0] = "not string";
+    case 2:
+    {
+        puts "no gaming >:(";
+    }
 
-puts a[1][0];
-puts b[0];
+    default:
+    {
+        puts "gaming";
+    }
+
+}
