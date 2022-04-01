@@ -235,7 +235,7 @@ public class Parser
 
     private Stmt switchStatement()
     {
-        Dictionary<Stmt, Stmt> cases = new Dictionary<Stmt, Stmt>();
+        Dictionary<Expr, Stmt> cases = new Dictionary<Expr, Stmt>();
         Stmt? defaultBranch = null;
 
         consumeError(LEFT_PAREN, "Expect '(' after 'switch'");
@@ -251,19 +251,19 @@ public class Parser
             // Case
             if (caseOrDefault.type is CASE)
             {
-                Stmt condition;
+                Expr condition;
                 Token? operant = isMatchRetToken(LESS, GREATER, GREATER_EQUAL, LESS_EQUAL, EQUAL_EQUAL, BANG_EQUAL);
                 Expr right = expression();
                 
                 if (operant is not null)
                 {
-                    condition = new ExpressionStmt(new BinaryExpr(value, operant, right));
+                    condition = new BinaryExpr(value, operant, right);
                 }
                 else
                 {
-                    condition = new ExpressionStmt(new BinaryExpr(value, 
+                    condition = new BinaryExpr(value, 
                         new Token(EQUAL_EQUAL, "<artificially created>", null, -1),
-                        right));
+                        right);
                 }
 
                 Stmt body = statement();

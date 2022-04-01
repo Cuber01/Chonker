@@ -192,6 +192,29 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
         throw new Break(stmt.keyword.line);
     }
 
+    public object? visitSwitchStmt(SwitchStmt stmt)
+    {
+        bool foundCase = false;
+
+        foreach (var pair in stmt.cases)
+        {
+            if (foundCase) break;
+            
+            if (isTruthy(evaluate(pair.Key))) 
+            {
+                execute(pair.Value);
+                foundCase = true;
+            } 
+        }
+
+        if (stmt.defaultBranch is not null && !foundCase)
+        {
+            execute(stmt.defaultBranch);
+        }
+
+        return null;
+    }
+
     #endregion
 
     #region Expressions

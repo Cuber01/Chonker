@@ -107,7 +107,7 @@ public class WhileStmt : Stmt
 
 public class SwitchStmt : Stmt
 {
-    public SwitchStmt(Dictionary<Stmt, Stmt> cases, Stmt? defaultBranch)
+    public SwitchStmt(Dictionary<Expr, Stmt> cases, Stmt? defaultBranch)
     {
         this.cases = cases;
         this.defaultBranch = defaultBranch;
@@ -118,7 +118,7 @@ public class SwitchStmt : Stmt
         return visitor.visitSwitchStmt(this);
     }
 
-    public readonly Dictionary<Stmt, Stmt> cases; // Condition, body
+    public readonly Dictionary<Expr, Stmt> cases; // Condition, body
     public readonly Stmt? defaultBranch;
 }
 
