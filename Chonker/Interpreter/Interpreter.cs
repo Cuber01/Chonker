@@ -50,14 +50,14 @@ public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
 
     }
 
-    private object evaluate(Expr expr)
+    public object evaluate(Expr expr)
     {
         return expr.accept(this);
     }
     
     #region Execution
 
-    private void execute(Stmt stmt) 
+    public void execute(Stmt stmt) 
     {
         stmt.accept(this);
     }

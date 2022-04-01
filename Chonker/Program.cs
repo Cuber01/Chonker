@@ -1,4 +1,5 @@
-﻿using Chonker.Functions;
+﻿using System.Net.NetworkInformation;
+using Chonker.Functions;
 using Chonker.Leaves;
 using Chonker.Parsing;
 using Chonker.Scanning;
@@ -47,21 +48,71 @@ namespace Chonker
                 
                 if (String.IsNullOrWhiteSpace(source))
                 {
-
+                    break;
                 }
-                else
+                
+                
+                if (!source.EndsWith(';'))
                 {
-                    if (!source.EndsWith(';'))
-                    {
-                        source += ';';
-                    }
-
-                    if (!source.StartsWith("puts "))
-                    {
-                        source = source.Insert(0, "puts ");
-                    }
-                    runFromString(source, false);
+                    source += ';';
                 }
+                
+                runFromStringRepl(source);
+            }
+
+        }
+
+        private static void runFromStringRepl(string source)
+        {
+            Scanner scanner = new Scanner(source);
+            List<Token> tokens = scanner.scanTokens();
+
+            if (scanner.hadError)
+            {
+                return;
+            }
+            
+            Parser parser = new Parser(tokens);
+            List<Stmt> statements = parser.parse();
+
+            if (parser.hadError)
+            {
+                return;
+            }
+
+            Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
+            try
+            {
+                try 
+                {
+                    foreach (var stmt in statements)
+                    {
+                        if (stmt is ExpressionStmt exprStmt)
+                        {
+                            Console.WriteLine(interpreter.evaluate(exprStmt.expression));
+                        }
+                        
+                        interpreter.execute(stmt);
+                    }
+                } catch (Error error)
+                {
+                    error.writeMessage();
+                }
+
+            }
+            catch (Return ret)
+            {
+                Error e = new Error("Interpreter", "Unexpected return statement", "", ret.line);
+                e.writeMessage();
+                
+                interpreter.hadError = true;
+            }
+            catch (Break br)
+            {
+                Error e = new Error("Interpreter", "Unexpected break statement", "", br.line);
+                e.writeMessage();
+
+                interpreter.hadError = true;
             }
 
         }
