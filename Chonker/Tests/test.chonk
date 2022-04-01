@@ -3,7 +3,7 @@ switch(10)
     
     case > 1:
     {
-        puts "no gaming >:(1";
+        puts "minor gaming";
     }
 
     case 2:
@@ -17,4 +17,40 @@ switch(10)
     }
 
 }
+
+switch(true)
+{
+
+    case true:
+    {
+        puts "+1 byczq";
+    }
+
+    case false:
+    {
+        puts "Fake news!!!";
+    }
+
+}
+
+switch(null)
+{
+
+    case true:
+    {
+        puts "+1 byczq";
+    }
+
+    case false:
+    {
+        puts "Fake news!!!";
+    }
+
+    default:
+    {
+        puts "Coping";
+    }
+
+}
+
 
