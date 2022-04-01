@@ -76,8 +76,7 @@ public class Parser
     {
         Token type = consumeMultipleError("Expect variable type", STRING_KW, NUMBER_KW, BOOL_KW, LIST_KW);
         Token name = consumeError(IDENTIFIER, "Expect variable name");
-
-        // TODO if initializer is null impplement a default value depending on type
+        
         Expr initializer = null!;
         if (isMatch(EQUAL)) 
         {
@@ -287,8 +286,7 @@ public class Parser
         }
         
         consumeError(RIGHT_BRACE, "Expect '}' after switch body");
-
-        // TODO return literally nothing if null
+        
         return new SwitchStmt(cases, defaultBranch);
     }
 

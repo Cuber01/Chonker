@@ -1,20 +1,5 @@
 switch(10)
 {
-    
-    case > 1:
-    {
-        puts "minor gaming";
-    }
-
-    case 2:
-    {
-        puts "no gaming >:(";
-    }
-
-    default:
-    {
-        puts "gaming";
-    }
 
 }
 

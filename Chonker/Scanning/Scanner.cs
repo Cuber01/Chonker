@@ -286,7 +286,6 @@ namespace Chonker.Scanning
 
             if (!keywords.TryGetValue(text, out var type))
             { 
-                // TODO
                addToken(IDENTIFIER);
                return;
             }

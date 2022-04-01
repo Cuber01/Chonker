@@ -6,6 +6,8 @@
 [path to file]      - run source from file
 ```
 
+If no args are provided, an interactive shell will launch.
+
 # Expressions
 
 ## Binary
@@ -216,7 +218,6 @@ for(;;)
 Lists can store a (theoretically) infinite number of all types of values.
 
 ```js
-// TODO lists are currently in heavy development
 [1, "hello", [2, 3], true, foo()]; // [1, "hello", [2, 3], true, true]
 
 function bool foo()
