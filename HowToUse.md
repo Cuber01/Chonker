@@ -1,3 +1,11 @@
+# Commandline arguments
+
+```
+--help              - display help prompt
+--source '[string]' - run given string as source
+[path to file]      - run source from file
+```
+
 # Expressions
 
 ## Binary
